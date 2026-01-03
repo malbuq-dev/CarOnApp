@@ -1,10 +1,10 @@
-import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne } from "typeorm";
 import { TypeormBaseEntity } from "./typeorm-base.entity";
 import { TypeormUserEntity } from "./typeorm-user.entity";
 
 @Entity('refresh_tokens')
 export class TypeormRefreshTokenEntity extends TypeormBaseEntity {
-    @Column({ type: 'timestamp' })
+    @CreateDateColumn({ type: 'timestamptz'})
     public expiryDate: Date;
 
     @Column()

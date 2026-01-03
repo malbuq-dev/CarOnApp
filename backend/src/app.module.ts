@@ -18,7 +18,8 @@ import { JwtModule } from '@nestjs/jwt';
       inject: [ConfigService],
     }),
   DatabaseModule,
-  AuthModule],
+  AuthModule,
+  ],
   controllers: [],
   providers: [],
 })

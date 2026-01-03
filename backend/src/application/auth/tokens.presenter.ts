@@ -1,0 +1,14 @@
+import { Tokens } from 'src/domain/entities/tokens';
+
+export class TokensPresenter {
+  static toHTTP(tokens: Tokens) {
+    return {
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+    };
+  }
+
+  static toHTTPList(tokens: Tokens[]) {
+    return tokens.map((tokens) => this.toHTTP(tokens));
+  }
+}

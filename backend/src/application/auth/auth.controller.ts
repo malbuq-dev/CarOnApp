@@ -4,12 +4,12 @@ import { CreateUserUseCase } from "./use-cases/create-user.use-case";
 import { AuthPresenter } from "./auth.presenter";
 import { LoginDto } from "./dtos/login.dto";
 import { LoginUseCase } from "./use-cases/login.use-case";
-import { AuthGuard } from "@nestjs/passport";
 import { AuthenticationGuard } from "src/core/guard/auth.guard";
 import { ChangePasswordUseCase } from "./use-cases/change-password.use-case";
 import { ChangePasswordDto } from "./dtos/change-password.dto";
 import { RefreshTokensDto } from "./dtos/refresh-tokens.dto";
 import { RefreshTokensUseCase } from "./use-cases/refresh-token.use-case";
+import { TokensPresenter } from "./tokens.presenter";
 
 @Controller('auth')
 export class AuthController {
@@ -43,7 +43,7 @@ export class AuthController {
             message: 'Usuário autenticado com sucesso',
             data: {
                 user,
-                tokens: result.tokens
+                tokens: TokensPresenter.toHTTP(result.tokens)
             }
         }
     }   
@@ -64,11 +64,11 @@ export class AuthController {
 
     @Post('refresh')
     async refreshTokens(@Body() refreshTokensDto: RefreshTokensDto) {
-        const tokens = await this.refreshTokensUseCase.execute(refreshTokensDto);
+        const result = await this.refreshTokensUseCase.execute(refreshTokensDto);
 
         return {
             message: 'Tokens restaurados com sucesso',
-            data: tokens
+            data: TokensPresenter.toHTTP(result.tokens)
         }
     }
 }
