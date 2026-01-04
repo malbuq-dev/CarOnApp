@@ -4,6 +4,8 @@ import { JwtAuthGuard } from 'src/core/guard/jwt-auth.guard';
 import { CreateRideUseCase } from './use-cases/create-ride.use-case';
 import { RidePresenter } from './ride.presenter';
 import { DeleteRideUseCase } from './use-cases/delete-ride.use-case';
+import { UpdateRideUseCase } from './use-cases/update-ride.use-case';
+import { UpdateRideDto } from './dtos/update-ride.dto';
 
 @Controller('rides')
 export class RideController {
@@ -11,6 +13,7 @@ export class RideController {
     constructor(
         private readonly createRideUseCase: CreateRideUseCase,
         private readonly deleteRideUseCase: DeleteRideUseCase,
+        private readonly updateRideUseCase: UpdateRideUseCase,
     ) {}
 
     @Post()
@@ -49,10 +52,14 @@ export class RideController {
 
     @Put(':id')
     @UseGuards(JwtAuthGuard)
-    async update(@Param('id', ParseUUIDPipe) rideId: string, @Req() req) {
+    async update(
+        @Param('id', ParseUUIDPipe) rideId: string,
+        @Body() updateRideDto: UpdateRideDto,
+        @Req() req) {
         const result = await this.updateRideUseCase.execute({
-            rideId: rideId,
-            userId: req.userId
+            rideId,
+            userId: req.userId,
+            ...updateRideDto
         });
 
         const updatedRide = RidePresenter.toHTTP(result.ride);
