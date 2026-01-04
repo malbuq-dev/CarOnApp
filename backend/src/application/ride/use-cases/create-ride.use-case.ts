@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { Ride } from "src/domain/entities/ride.entity";
-import { USERS_REPOSITORY } from "src/domain/repositories/repository.tokens";
-import { UsersRepository } from "src/domain/repositories/users.repository";
+import { RIDES_REPOSITORY, USERS_REPOSITORY } from "src/domain/repositories/repository.tokens";
+import type { RidesRepository } from "src/domain/repositories/ride.repository";
+import type { UsersRepository } from "src/domain/repositories/users.repository";
 import { Money } from "src/domain/value-objects/money.value-object";
 
 export interface CreateRideRequest {
@@ -56,7 +57,7 @@ export class CreateRideUseCase {
             price
         );
 
-        await this.ridesRepository.create(ride);
+        await this.ridesRepository.save(ride);
 
         return { ride };
     }

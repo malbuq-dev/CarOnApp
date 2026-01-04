@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 import { Request } from 'express';
 
 @Injectable()
-export class AuthenticationGuard implements CanActivate {
+export class JwtAuthGuard implements CanActivate {
   constructor(private jwtService: JwtService) {}
 
   canActivate(

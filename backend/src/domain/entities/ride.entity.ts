@@ -29,4 +29,6 @@ export class Ride extends Base {
     this.totalSeats = totalSeats;
     this.price = price;
   }
+
+  
 }

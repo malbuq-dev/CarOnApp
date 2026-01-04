@@ -4,7 +4,7 @@ import { CreateUserUseCase } from "./use-cases/create-user.use-case";
 import { AuthPresenter } from "./auth.presenter";
 import { LoginDto } from "./dtos/login.dto";
 import { LoginUseCase } from "./use-cases/login.use-case";
-import { AuthenticationGuard } from "src/core/guard/auth.guard";
+import { JwtAuthGuard } from "src/core/guard/jwt-auth.guard";
 import { ChangePasswordUseCase } from "./use-cases/change-password.use-case";
 import { ChangePasswordDto } from "./dtos/change-password.dto";
 import { RefreshTokensDto } from "./dtos/refresh-tokens.dto";
@@ -48,7 +48,7 @@ export class AuthController {
         }
     }   
 
-    @UseGuards(AuthenticationGuard)
+    @UseGuards(JwtAuthGuard)
     @Put('change-password')
     async changePassword(@Body() changePasswordData: ChangePasswordDto, @Req() req) {
         await this.changePasswordUseCase.execute({

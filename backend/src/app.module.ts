@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseModule } from './infrastructure/database/database.module';
 import { AuthModule } from './application/auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
+import { RideModule } from './application/ride/ride.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { JwtModule } from '@nestjs/jwt';
     }),
   DatabaseModule,
   AuthModule,
+  RideModule,
   ],
   controllers: [],
   providers: [],
