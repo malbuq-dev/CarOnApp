@@ -3,6 +3,9 @@ import { RideController } from './ride.controller';
 import { CreateRideUseCase } from './use-cases/create-ride.use-case';
 import { InfrastructureModule } from 'src/infrastructure/infrastructure.module';
 import { DeleteRideUseCase } from './use-cases/delete-ride.use-case';
+import { UpdateRideUseCase } from './use-cases/update-ride.use-case';
+import { GetRideUseCase } from './use-cases/get-ride.use-case';
+import { FetchUserRidesUseCase } from './use-cases/fetch-user-rides.use-case';
 
 @Module({
   imports: [InfrastructureModule],
@@ -10,6 +13,9 @@ import { DeleteRideUseCase } from './use-cases/delete-ride.use-case';
   providers: [
     CreateRideUseCase,
     DeleteRideUseCase,
+    UpdateRideUseCase,
+    GetRideUseCase,
+    FetchUserRidesUseCase,
   ]
 })
 export class RideModule {}

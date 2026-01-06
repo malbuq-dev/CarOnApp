@@ -24,7 +24,7 @@ export class DeleteRideUseCase {
         const existingRide = await this.ridesRepository.findByIdAndAuthorId(rideId, userId);
 
         if (!existingRide) {
-            throw new NotFoundException('Corrida não encontrada');
+            throw new NotFoundException('Carona não encontrada');
         }
 
         await this.ridesRepository.deleteByIdAndAuthorId(rideId, userId);

@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { Ride } from "src/domain/entities/ride.entity";
 import { RIDES_REPOSITORY, USERS_REPOSITORY } from "src/domain/repositories/repository.tokens";
 import type { RidesRepository } from "src/domain/repositories/ride.repository";
@@ -26,28 +26,41 @@ export class UpdateRideUseCase {
         private readonly ridesRepository: RidesRepository,
     ) {}
 
-    async execute(request: UpdateRideRequest) {
-        const ride = await this.ridesRepository.findByIdAndAuthorId(
-            request.rideId,
-            request.userId
+    async execute(updateRideRequest: UpdateRideRequest) {
+        const {
+            rideId,
+            userId,
+            origin,
+            destination,
+            departureTime,
+            arrivalTime,
+            totalSeats,
+            price
+        } = updateRideRequest;
+
+        const existingRide = await this.ridesRepository.findByIdAndAuthorId(
+            rideId,
+            userId
         );
 
-        if (!ride) {
-            throw new NotFoundException();
+        if (!existingRide) {
+            throw new NotFoundException('A carona não foi encontrada');
         }
 
-        ride.update({
-            origin: request.origin,
-            destination: request.destination,
-            departureTime: new Date(request.departureTime),
-            arrivalTime: new Date(request.arrivalTime),
-            totalSeats: request.totalSeats,
-            price: Money.fromDecimal(request.price),
-        });
+        if (origin) existingRide.origin = origin;
+        if (destination) existingRide.destination = destination;
+        if (departureTime) existingRide.departureTime = new Date(departureTime);
+        if (arrivalTime) existingRide.arrivalTime = new Date(arrivalTime);
+        if (totalSeats) existingRide.totalSeats = totalSeats;
+        if (price) existingRide.price = Money.fromDecimal(price);
 
-        await this.ridesRepository.save(ride);
+        if (existingRide.arrivalTime <= existingRide.departureTime) {
+            throw new BadRequestException('O horário de saída e chegada da carona são inválidos');
+        }
 
-        return { ride };
+        await this.ridesRepository.save(existingRide);
+
+        return { updatedRide: existingRide };
     }
 
 

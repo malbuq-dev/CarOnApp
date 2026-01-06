@@ -11,7 +11,7 @@ export class CreateRideDto {
     @IsDateString()
     departureTime: string;
     
-    @ValidateIf((ride) => new Date(ride.arrivalTime) > new Date(ride.departureTime))
+    @IsDateString()
     arrivalTime: string;
     
     @Type(() => Number)

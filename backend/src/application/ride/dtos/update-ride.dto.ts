@@ -14,7 +14,7 @@ export class UpdateRideDto {
     @IsOptional()
     departureTime: string;
     
-    @ValidateIf((ride) => new Date(ride.arrivalTime) > new Date(ride.departureTime))
+    @IsDateString()
     @IsOptional()
     arrivalTime: string;
     

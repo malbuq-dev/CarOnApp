@@ -3,6 +3,9 @@ import { Ride } from "src/domain/entities/ride.entity";
 export class RidePresenter {
   static toHTTP(ride: Ride) {
     return {
+      driver: {
+        id: ride.driver.id
+      },
       id: ride.id,
       origin: ride.origin,
       destination: ride.destination,

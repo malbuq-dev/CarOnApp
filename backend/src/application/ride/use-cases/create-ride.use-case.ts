@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { Ride } from "src/domain/entities/ride.entity";
 import { RIDES_REPOSITORY, USERS_REPOSITORY } from "src/domain/repositories/repository.tokens";
 import type { RidesRepository } from "src/domain/repositories/ride.repository";
@@ -47,12 +47,19 @@ export class CreateRideUseCase {
 
         const price = Money.fromDecimal(priceString);
 
+        const departureDate = new Date(departureTime);
+        const arrivalDate = new Date(arrivalTime);
+
+        if (arrivalDate <= departureDate) {
+            throw new BadRequestException('O hórario de chegada se encontra inválido');
+        }
+
         const ride = new Ride(
             driver,
             origin,
             destination,
-            new Date(departureTime),
-            new Date(arrivalTime),
+            departureDate,
+            arrivalDate,
             totalSeats,
             price
         );
