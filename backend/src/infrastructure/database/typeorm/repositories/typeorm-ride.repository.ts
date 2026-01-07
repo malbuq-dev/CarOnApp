@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Ride } from "src/domain/entities/ride.entity";
 import { RidesRepository } from "src/domain/repositories/ride.repository";
-import { Repository } from "typeorm";
+import { ILike, MoreThanOrEqual, Repository } from "typeorm";
 import { TypeormRideEntity } from "../entities/typeorm-ride.entity";
 import { RideMapper } from "../mappers/ride.mapper";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -15,7 +15,48 @@ export class TypeormRideRepository implements RidesRepository {
         private readonly repository: Repository<TypeormRideEntity>
     ) {}
 
-    async findManyByAuthor(query: PaginationFilterType, authorId: string): Promise<Ride[] | null> {
+    async searchRides(filter: {
+        origin?: string;
+        destination?: string;
+        date?: string;
+        seats?: number;
+        limit?: number;
+        offset?: number;
+        sortBy?: string;
+        sortOrder?: 'asc' | 'desc';
+    }): Promise<Ride[]> {
+        const {
+            origin,
+            destination,
+            date,
+            seats,
+            limit = 50, // TO-DO: fazer isso aqui sair do config file
+            offset = 0,
+            sortBy = 'departureTime',
+            sortOrder = 'asc',
+        } = filter;
+
+        const where: any = {};
+
+        if (origin) where.origin = ILike(`%${origin}%`);
+        if (destination) where.destination = ILike(`%${destination}%`);
+        if (seats) where.totalSeats = MoreThanOrEqual(seats);
+        if (date) where.departureTime = MoreThanOrEqual(new Date(date));
+
+        const rides = await this.repository.find({
+            relations: ['driver'],
+            where,
+            take: limit,
+            skip: offset,
+            order: {
+            [sortBy]: sortOrder.toUpperCase(),
+            },
+        });
+
+        return rides.map(RideMapper.toDomain);
+    }
+
+    async findManyByAuthor(query: PaginationFilterType, authorId: string): Promise<Ride[]> {
         const limit = query.limit ?? 50; // TO-DO: fazer isso aqui sair do config file
         const offset = query.offset ?? 0;
 

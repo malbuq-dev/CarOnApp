@@ -4,26 +4,30 @@ import { Ride } from "src/domain/entities/ride.entity";
 import { RIDES_REPOSITORY } from "src/domain/repositories/repository.tokens";
 import type { RidesRepository } from "src/domain/repositories/ride.repository";
 
-export interface FetchUserRidesRequest {
-    userId: string,
-    query: PaginationFilterType
+export interface SearchRidesRequest {
+      origin: string;
+      destination: string;
+      date: string;
+      seats: number;
+      limit?: number;
+      offset?: number;
+      sortBy?: string;
+      sortOrder?: 'asc' | 'desc';
 }
 
-export interface FetchUserRidesResponse {
+export interface SearchRidesResponse {
     rides: Ride[]
 }
 
 @Injectable()
-export class FetchUserRidesUseCase {
+export class SearchRidesUseCase {
     constructor(
         @Inject(RIDES_REPOSITORY)
         private readonly ridesRepository: RidesRepository
     ) {}
 
-    async execute(request: FetchUserRidesRequest): Promise<FetchUserRidesResponse> {
-        const {userId, query } = request;
-
-        const rides = await this.ridesRepository.findManyByAuthor(query, userId);
+    async execute(request: SearchRidesRequest): Promise<SearchRidesResponse> {
+        const rides = await this.ridesRepository.searchRides(request);
 
         return { rides };
     }

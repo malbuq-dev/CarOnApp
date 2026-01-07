@@ -9,6 +9,8 @@ import { UpdateRideDto } from './dtos/update-ride.dto';
 import { GetRideUseCase } from './use-cases/get-ride.use-case';
 import type { PaginationFilterType } from 'src/core/types/pagination-filter.type';
 import { FetchUserRidesUseCase } from './use-cases/fetch-user-rides.use-case';
+import { SearchRidesQueryDto } from './dtos/search-query.dto';
+import { SearchRidesUseCase } from './use-cases/search-rides.use-case';
 
 @Controller('rides')
 export class RideController {
@@ -19,6 +21,7 @@ export class RideController {
         private readonly updateRideUseCase: UpdateRideUseCase,
         private readonly getRideUseCase: GetRideUseCase,
         private readonly fetchUserRidesUseCase: FetchUserRidesUseCase,
+        private readonly searchRidesUseCase: SearchRidesUseCase,
     ) {}
 
     @Post()
@@ -39,6 +42,36 @@ export class RideController {
         return {
             message: 'Corrida criada com sucesso',
             data: ride
+        }
+    }
+    
+    @Get('/me')
+    @UseGuards(JwtAuthGuard)
+    async fetchMyRides(
+        @Query() query: PaginationFilterType,
+        @Req() req) {
+            const result = await this.fetchUserRidesUseCase.execute({
+                userId: req.userId,
+                query
+            });
+
+            const rides = RidePresenter.toHTTPList(result.rides);
+
+            return {
+                message: 'Caronas do usuário recuperadas com sucesso',
+                data: rides
+            }
+    }
+
+    @Get()
+    async search(@Query() query: SearchRidesQueryDto) {
+        const result = await this.searchRidesUseCase.execute(query);
+
+        const rides = RidePresenter.toHTTPList(result.rides);
+
+        return {
+            message: 'Busca por caronas realizada com sucesso',
+            data: rides
         }
     }
 
@@ -89,26 +122,5 @@ export class RideController {
             data: ride
         }
     }
-
-    @Get('/me')
-    @UseGuards(JwtAuthGuard)
-    async fetchMyOfferedRides(
-        @Query() query: PaginationFilterType,
-        @Req() req) {
-            const result = await this.fetchUserRidesUseCase.execute({
-                userId: req.userId,
-                query
-            });
-
-            const rides = RidePresenter.toHTTPList(result.rides);
-
-            return {
-                message: 'Caronas do usuário recuperadas com sucesso',
-                data: rides
-            }
-    }
-
-    // TO-DO: Rides em um destino especifico em data especifica, e qnt de passageiros especifico, fazer isso flexivel
-
 
 }
