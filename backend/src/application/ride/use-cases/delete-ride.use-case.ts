@@ -1,4 +1,5 @@
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { RESPONSES } from "src/core/response/response.messages";
 import { RIDES_REPOSITORY, USERS_REPOSITORY } from "src/domain/repositories/repository.tokens";
 import type { RidesRepository } from "src/domain/repositories/ride.repository";
 import type { UsersRepository } from "src/domain/repositories/users.repository";
@@ -24,7 +25,7 @@ export class DeleteRideUseCase {
         const existingRide = await this.ridesRepository.findByIdAndAuthorId(rideId, userId);
 
         if (!existingRide) {
-            throw new NotFoundException('Carona não encontrada');
+            throw new NotFoundException(RESPONSES.RIDES.NOT_FOUND);
         }
 
         await this.ridesRepository.deleteByIdAndAuthorId(rideId, userId);

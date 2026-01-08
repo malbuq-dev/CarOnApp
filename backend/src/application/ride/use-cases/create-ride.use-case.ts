@@ -1,4 +1,5 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { RESPONSES } from "src/core/response/response.messages";
 import { Ride } from "src/domain/entities/ride.entity";
 import { RIDES_REPOSITORY, USERS_REPOSITORY } from "src/domain/repositories/repository.tokens";
 import type { RidesRepository } from "src/domain/repositories/ride.repository";
@@ -42,7 +43,7 @@ export class CreateRideUseCase {
         const driver = await this.usersRepository.findById(driverId);
 
         if (!driver) {
-            throw new NotFoundException('Motorista não encontrado');
+            throw new NotFoundException(RESPONSES.RIDES.DRIVER_NOT_FOUND);
         }
 
         const price = Money.fromDecimal(priceString);

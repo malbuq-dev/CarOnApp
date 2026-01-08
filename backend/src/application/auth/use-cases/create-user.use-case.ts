@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import type { UsersRepository } from "src/domain/repositories/users.repository";
 import type { PasswordHasher } from "src/domain/security/password-hasher";
 import { PASSWORD_HASHER } from "src/domain/security/security.tokens";
+import { RESPONSES } from "src/core/response/response.messages";
 
 export interface CreateUserUseCaseRequest {
     firstName: string;
@@ -29,7 +30,7 @@ export class CreateUserUseCase {
         const existingUser = await this.usersRepository.findByEmail(createUserUseCaseRequest.email);
 
         if (existingUser) {
-            throw new ConflictException("O e-mail informado já está em uso");
+            throw new ConflictException(RESPONSES.USERS.EMAIL_ALREADY_IN_USE);
         }
         
         const hashedPassword = await this.passwordHasher.hash(createUserUseCaseRequest.password);

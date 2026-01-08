@@ -3,6 +3,7 @@ import type { RefreshTokenRepository } from "src/domain/repositories/refresh-tok
 import { REFRESH_TOKEN_REPOSITORY } from "src/domain/repositories/repository.tokens";
 import { TokenService } from "../services/tokens.service";
 import { Tokens } from "src/domain/entities/tokens";
+import { RESPONSES } from "src/core/response/response.messages";
 
 export interface RefreshTokensRequest {
     refreshToken: string
@@ -24,7 +25,7 @@ export class RefreshTokensUseCase {
         const token = await this.refreshTokenRepository.findByToken(refreshTokenRequest.refreshToken);
 
         if (!token) {
-            throw new UnauthorizedException('Refresh Token inválido');
+            throw new UnauthorizedException(RESPONSES.AUTH.INVALID_REFRESH_TOKEN);
         }
 
         return {

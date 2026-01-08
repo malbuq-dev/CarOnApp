@@ -1,126 +1,147 @@
-import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  Query,
+  Req,
+  UseGuards
+} from '@nestjs/common';
+import { ApiOperation, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+
 import { CreateRideDto } from './dtos/create-ride.dto';
+import { UpdateRideDto } from './dtos/update-ride.dto';
+import { SearchRidesQueryDto } from './dtos/search-query.dto';
+
 import { JwtAuthGuard } from 'src/core/guard/jwt-auth.guard';
+import type { PaginationFilterType } from 'src/core/types/pagination-filter.type';
+
 import { CreateRideUseCase } from './use-cases/create-ride.use-case';
-import { RidePresenter } from './ride.presenter';
 import { DeleteRideUseCase } from './use-cases/delete-ride.use-case';
 import { UpdateRideUseCase } from './use-cases/update-ride.use-case';
-import { UpdateRideDto } from './dtos/update-ride.dto';
 import { GetRideUseCase } from './use-cases/get-ride.use-case';
-import type { PaginationFilterType } from 'src/core/types/pagination-filter.type';
 import { FetchUserRidesUseCase } from './use-cases/fetch-user-rides.use-case';
-import { SearchRidesQueryDto } from './dtos/search-query.dto';
 import { SearchRidesUseCase } from './use-cases/search-rides.use-case';
 
+import { RidePresenter } from './ride.presenter';
+import { RESPONSES } from 'src/core/response/response.messages';
+
+@ApiTags('Rides')
+@ApiBearerAuth()
 @Controller('rides')
 export class RideController {
+  constructor(
+    private readonly createRideUseCase: CreateRideUseCase,
+    private readonly deleteRideUseCase: DeleteRideUseCase,
+    private readonly updateRideUseCase: UpdateRideUseCase,
+    private readonly getRideUseCase: GetRideUseCase,
+    private readonly fetchUserRidesUseCase: FetchUserRidesUseCase,
+    private readonly searchRidesUseCase: SearchRidesUseCase,
+  ) {}
 
-    constructor(
-        private readonly createRideUseCase: CreateRideUseCase,
-        private readonly deleteRideUseCase: DeleteRideUseCase,
-        private readonly updateRideUseCase: UpdateRideUseCase,
-        private readonly getRideUseCase: GetRideUseCase,
-        private readonly fetchUserRidesUseCase: FetchUserRidesUseCase,
-        private readonly searchRidesUseCase: SearchRidesUseCase,
-    ) {}
+  @Post()
+  @ApiOperation({ summary: 'Cria uma nova carona' })
+  @UseGuards(JwtAuthGuard)
+  async create(@Body() createRideDto: CreateRideDto, @Req() req) {
+    const result = await this.createRideUseCase.execute({
+      driverId: req.userId,
+      origin: createRideDto.origin,
+      destination: createRideDto.destination,
+      departureTime: createRideDto.departureTime,
+      arrivalTime: createRideDto.arrivalTime,
+      totalSeats: createRideDto.totalSeats,
+      priceString: createRideDto.price,
+    });
 
-    @Post()
-    @UseGuards(JwtAuthGuard)
-    async create(@Body() createRideDto: CreateRideDto, @Req() req) {
-        const result = await this.createRideUseCase.execute({
-            driverId: req.userId,
-            origin: createRideDto.origin,
-            destination: createRideDto.destination,
-            departureTime: createRideDto.departureTime,
-            arrivalTime: createRideDto.arrivalTime,
-            totalSeats: createRideDto.totalSeats,
-            priceString: createRideDto.price,
-        });
+    return {
+      message: RESPONSES.RIDES.CREATED_SUCCESSFULLY,
+      data: RidePresenter.toHTTP(result.ride),
+    };
+  }
 
-        const ride = RidePresenter.toHTTP(result.ride);
+  @Get('/me')
+  @ApiOperation({ summary: 'Lista todas as caronas do usuário autenticado' })
+  @UseGuards(JwtAuthGuard)
+  async fetchMyRides(
+    @Query() query: PaginationFilterType,
+    @Req() req
+  ) {
+    const result = await this.fetchUserRidesUseCase.execute({
+      userId: req.userId,
+      query,
+    });
 
-        return {
-            message: 'Corrida criada com sucesso',
-            data: ride
-        }
-    }
-    
-    @Get('/me')
-    @UseGuards(JwtAuthGuard)
-    async fetchMyRides(
-        @Query() query: PaginationFilterType,
-        @Req() req) {
-            const result = await this.fetchUserRidesUseCase.execute({
-                userId: req.userId,
-                query
-            });
+    return {
+      message: RESPONSES.RIDES.FETCHED_SUCCESSFULLY,
+      data: RidePresenter.toHTTPList(result.rides),
+    };
+  }
 
-            const rides = RidePresenter.toHTTPList(result.rides);
+  @Get()
+  @ApiOperation({ summary: 'Busca caronas com base nos filtros informados' })
+  async search(@Query() query: SearchRidesQueryDto) {
+    const result = await this.searchRidesUseCase.execute(query);
 
-            return {
-                message: 'Caronas do usuário recuperadas com sucesso',
-                data: rides
-            }
-    }
+    return {
+      message: RESPONSES.RIDES.FETCHED_SUCCESSFULLY,
+      data: RidePresenter.toHTTPList(result.rides),
+    };
+  }
 
-    @Get()
-    async search(@Query() query: SearchRidesQueryDto) {
-        const result = await this.searchRidesUseCase.execute(query);
+  @Get(':id')
+  @ApiOperation({ summary: 'Busca uma carona pelo ID' })
+  @UseGuards(JwtAuthGuard)
+  async get(@Param('id', ParseUUIDPipe) id: string) {
+    const result = await this.getRideUseCase.execute({ id });
 
-        const rides = RidePresenter.toHTTPList(result.rides);
+    return {
+      message: RESPONSES.RIDES.FETCH_BY_ID_SUCCESSFULLY,
+      data: RidePresenter.toHTTP(result.ride),
+    };
+  }
 
-        return {
-            message: 'Busca por caronas realizada com sucesso',
-            data: rides
-        }
-    }
+  @Patch(':id')
+  @ApiOperation({ summary: 'Atualiza os dados de uma carona existente' })
+  @UseGuards(JwtAuthGuard)
+  async update(
+    @Param('id', ParseUUIDPipe) rideId: string,
+    @Body() updateRideDto: UpdateRideDto,
+    @Req() req
+  ) {
+    const result = await this.updateRideUseCase.execute({
+      rideId,
+      userId: req.userId,
+      ...updateRideDto,
+    });
 
-    @Delete(':id')
-    @UseGuards(JwtAuthGuard)
-    async delete(@Param('id', ParseUUIDPipe) rideId: string, @Req() req) {
-        await this.deleteRideUseCase.execute({
-            rideId: rideId,
-            userId: req.userId
-        });
+    return {
+      message: RESPONSES.RIDES.UPDATED_SUCCESSFULLY,
+      data: RidePresenter.toHTTP(result.updatedRide),
+    };
+  }
 
-        return {
-            message: 'Corrida removida com sucesso'
-        }
-    }
+  @Delete(':id')
+  @ApiOperation({ summary: 'Remove uma carona pelo ID' })
+  @UseGuards(JwtAuthGuard)
+  async delete(
+    @Param('id', ParseUUIDPipe) rideId: string,
+    @Req() req
+  ) {
+    await this.deleteRideUseCase.execute({
+      rideId,
+      userId: req.userId,
+    });
 
-    @Patch(':id')
-    @UseGuards(JwtAuthGuard)
-    async update(
-        @Param('id', ParseUUIDPipe) rideId: string,
-        @Body() updateRideDto: UpdateRideDto,
-        @Req() req) {
-        const result = await this.updateRideUseCase.execute({
-            rideId,
-            userId: req.userId,
-            ...updateRideDto
-        });
-
-        const updatedRide = RidePresenter.toHTTP(result.updatedRide);
-
-        return {
-            message: 'Corrida editada com sucesso',
-            data: updatedRide
-        }
-    }
-
-    @Get(':id')
-    @UseGuards(JwtAuthGuard)
-    async get(@Param('id', ParseUUIDPipe) id: string) {
-        const result = await this.getRideUseCase.execute({
-            id
-        })
-
-        const ride = RidePresenter.toHTTP(result.ride);
-
-        return {
-            message: 'Corrida recuperada com sucesso',
-            data: ride
-        }
-    }
-
+    return {
+      message: RESPONSES.RIDES.DELETED_SUCCESSFULLY,
+    };
+  }
 }
+function ApiBarrearAuth(): (target: typeof RideController) => void | typeof RideController {
+    throw new Error('Function not implemented.');
+}
+

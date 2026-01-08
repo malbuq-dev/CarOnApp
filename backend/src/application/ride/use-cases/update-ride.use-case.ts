@@ -1,4 +1,5 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { RESPONSES } from "src/core/response/response.messages";
 import { Ride } from "src/domain/entities/ride.entity";
 import { RIDES_REPOSITORY, USERS_REPOSITORY } from "src/domain/repositories/repository.tokens";
 import type { RidesRepository } from "src/domain/repositories/ride.repository";
@@ -44,7 +45,7 @@ export class UpdateRideUseCase {
         );
 
         if (!existingRide) {
-            throw new NotFoundException('A carona não foi encontrada');
+            throw new NotFoundException(RESPONSES.RIDES.NOT_FOUND);
         }
 
         if (origin) existingRide.origin = origin;
@@ -55,7 +56,7 @@ export class UpdateRideUseCase {
         if (price) existingRide.price = Money.fromDecimal(price);
 
         if (existingRide.arrivalTime <= existingRide.departureTime) {
-            throw new BadRequestException('O horário de saída e chegada da carona são inválidos');
+            throw new BadRequestException(RESPONSES.RIDES.ARRIVAL_AND_DEPARTURE_TIME_INCONSISTENT);
         }
 
         await this.ridesRepository.save(existingRide);

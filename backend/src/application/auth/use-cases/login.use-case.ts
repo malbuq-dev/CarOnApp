@@ -10,6 +10,7 @@ import type { PasswordHasher } from "src/domain/security/password-hasher";
 import { PASSWORD_HASHER } from "src/domain/security/security.tokens";
 import { TokenService } from "../services/tokens.service";
 import { Tokens } from "src/domain/entities/tokens";
+import { RESPONSES } from "src/core/response/response.messages";
 
 export interface LoginUseCaseRequest {
     email: string;
@@ -37,16 +38,16 @@ export class LoginUseCase {
     const user = await this.usersRepository.findByEmail(request.email);
 
     if (!user) {
-      throw new UnauthorizedException('Credenciais inválidas');
+      throw new UnauthorizedException(RESPONSES.AUTH.INVALID_CREDENTIALS);
     }
-
+    
     const passwordMatch = await this.passwordHasher.compare(
       request.password,
       user.password,
     );
-
+    
     if (!passwordMatch) {
-      throw new UnauthorizedException('Credenciais inválidas');
+      throw new UnauthorizedException(RESPONSES.AUTH.INVALID_CREDENTIALS);
     }
 
     const tokens = await this.tokenService.generateTokensForUser(user);

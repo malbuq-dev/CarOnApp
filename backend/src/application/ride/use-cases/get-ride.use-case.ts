@@ -1,4 +1,5 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { RESPONSES } from "src/core/response/response.messages";
 import { Ride } from "src/domain/entities/ride.entity";
 import { RIDES_REPOSITORY, USERS_REPOSITORY } from "src/domain/repositories/repository.tokens";
 import type { RidesRepository } from "src/domain/repositories/ride.repository";
@@ -26,7 +27,7 @@ export class GetRideUseCase {
         const ride = await this.ridesRepository.findById(id);
 
         if (!ride) {
-            throw new NotFoundException('Carona não encontrada');
+            throw new NotFoundException(RESPONSES.RIDES.NOT_FOUND);
         }
 
         return { ride };

@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './core/filters/http-exception.filter';
+import { swaggerConfig } from './core/config/swagger.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,6 +12,8 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }
   ))
+  swaggerConfig(app);
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

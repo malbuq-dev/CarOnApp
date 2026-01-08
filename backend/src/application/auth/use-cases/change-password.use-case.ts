@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import type { UsersRepository } from "src/domain/repositories/users.repository";
 import { PASSWORD_HASHER } from "src/domain/security/security.tokens";
 import type { PasswordHasher } from "src/domain/security/password-hasher";
+import { RESPONSES } from "src/core/response/response.messages";
 
 export interface ChangePasswordRequest {
     userId: string;
@@ -24,7 +25,7 @@ export class ChangePasswordUseCase {
         const user = await this.usersRespository.findById(changePasswordData.userId);
         
         if (!user) {
-            throw new UnauthorizedException('Credenciais inválidas');
+            throw new UnauthorizedException(RESPONSES.AUTH.INVALID_CREDENTIALS);
         }
         
         const isValid = await this.passwordHasher.compare(
@@ -33,7 +34,7 @@ export class ChangePasswordUseCase {
         );
 
         if (!isValid) {
-            throw new UnauthorizedException('Credenciais inválidas');
+            throw new UnauthorizedException(RESPONSES.AUTH.INVALID_CREDENTIALS);
         }
 
         const newPasswordHash = await this.passwordHasher.hash(changePasswordData.newPassword);
