@@ -9,9 +9,9 @@ import { BookingsModule } from './application/booking/booking.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-    isGlobal: true,
-  }),
-  JwtModule.registerAsync({
+      isGlobal: true,
+    }),
+    JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (config) => ({
         secret: config.get('JWT_SECRET'),
@@ -19,10 +19,10 @@ import { BookingsModule } from './application/booking/booking.module';
       global: true,
       inject: [ConfigService],
     }),
-  DatabaseModule,
-  AuthModule,
-  RidesModule,
-  BookingsModule,
+    DatabaseModule,
+    AuthModule,
+    RidesModule,
+    BookingsModule,
   ],
   controllers: [],
   providers: [],

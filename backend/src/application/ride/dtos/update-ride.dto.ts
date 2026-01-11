@@ -10,7 +10,6 @@ import {
 } from 'class-validator';
 
 export class UpdateRideDto {
-
   @ApiPropertyOptional({
     description: 'Novo local de origem da carona',
     example: 'Garanhuns - PE',

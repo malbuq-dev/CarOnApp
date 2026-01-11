@@ -4,9 +4,7 @@ import { UserMapper } from './user.mapper';
 import dayjs from 'src/core/config/dayjs.config';
 
 export class RefreshTokenMapper {
-  static toDomain(
-    entity: TypeormRefreshTokenEntity,
-  ): RefreshToken {
+  static toDomain(entity: TypeormRefreshTokenEntity): RefreshToken {
     const refreshToken = new RefreshToken(
       entity.token,
       UserMapper.toDomain(entity.user),
@@ -19,9 +17,7 @@ export class RefreshTokenMapper {
     return refreshToken;
   }
 
-  static toPersistence(
-    refreshToken: RefreshToken,
-  ): TypeormRefreshTokenEntity {
+  static toPersistence(refreshToken: RefreshToken): TypeormRefreshTokenEntity {
     const entity = new TypeormRefreshTokenEntity();
 
     entity.id = refreshToken.id;

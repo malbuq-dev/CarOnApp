@@ -1,10 +1,10 @@
-import { Ride } from "src/domain/entities/ride.entity";
+import { Ride } from 'src/domain/entities/ride.entity';
 
 export class RidePresenter {
   static toHTTP(ride: Ride) {
     return {
       driver: {
-        id: ride.driverId
+        id: ride.driverId,
       },
       id: ride.id,
       origin: ride.origin,

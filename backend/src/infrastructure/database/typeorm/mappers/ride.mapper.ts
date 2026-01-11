@@ -24,7 +24,7 @@ export class RideMapper {
       bookings,
     );
   }
-  
+
   static toPersistence(ride: Ride): TypeormRideEntity {
     const entity = new TypeormRideEntity();
     entity.id = ride.id;

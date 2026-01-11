@@ -1,46 +1,50 @@
-import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
-import { USERS_REPOSITORY } from "src/domain/repositories/repository.tokens";
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { USERS_REPOSITORY } from 'src/domain/repositories/repository.tokens';
 import * as bcrypt from 'bcrypt';
-import type { UsersRepository } from "src/domain/repositories/users.repository";
-import { PASSWORD_HASHER } from "src/domain/security/security.tokens";
-import type { PasswordHasher } from "src/domain/security/password-hasher";
-import { RESPONSES } from "src/core/response/response.messages";
+import type { UsersRepository } from 'src/domain/repositories/users.repository';
+import { PASSWORD_HASHER } from 'src/domain/security/security.tokens';
+import type { PasswordHasher } from 'src/domain/security/password-hasher';
+import { RESPONSES } from 'src/core/response/response.messages';
 
 export interface ChangePasswordRequest {
-    userId: string;
-    oldPassword: string;
-    newPassword: string;
+  userId: string;
+  oldPassword: string;
+  newPassword: string;
 }
 
 @Injectable()
 export class ChangePasswordUseCase {
-    constructor(
-        @Inject(USERS_REPOSITORY)
-        private readonly usersRespository: UsersRepository,
-        @Inject(PASSWORD_HASHER)
-        private readonly passwordHasher: PasswordHasher,
-    ) {}
+  constructor(
+    @Inject(USERS_REPOSITORY)
+    private readonly usersRespository: UsersRepository,
+    @Inject(PASSWORD_HASHER)
+    private readonly passwordHasher: PasswordHasher,
+  ) {}
 
-    async execute(changePasswordData: ChangePasswordRequest): Promise<void> {
-        const user = await this.usersRespository.findById(changePasswordData.userId);
-        
-        if (!user) {
-            throw new UnauthorizedException(RESPONSES.AUTH.INVALID_CREDENTIALS);
-        }
-        
-        const isValid = await this.passwordHasher.compare(
-        changePasswordData.oldPassword,
-        user?.password,
-        );
+  async execute(changePasswordData: ChangePasswordRequest): Promise<void> {
+    const user = await this.usersRespository.findById(
+      changePasswordData.userId,
+    );
 
-        if (!isValid) {
-            throw new UnauthorizedException(RESPONSES.AUTH.INVALID_CREDENTIALS);
-        }
-
-        const newPasswordHash = await this.passwordHasher.hash(changePasswordData.newPassword);
-
-        user.changePassword(newPasswordHash);
-
-        await this.usersRespository.save(user);
+    if (!user) {
+      throw new UnauthorizedException(RESPONSES.AUTH.INVALID_CREDENTIALS);
     }
+
+    const isValid = await this.passwordHasher.compare(
+      changePasswordData.oldPassword,
+      user?.password,
+    );
+
+    if (!isValid) {
+      throw new UnauthorizedException(RESPONSES.AUTH.INVALID_CREDENTIALS);
+    }
+
+    const newPasswordHash = await this.passwordHasher.hash(
+      changePasswordData.newPassword,
+    );
+
+    user.changePassword(newPasswordHash);
+
+    await this.usersRespository.save(user);
+  }
 }

@@ -1,15 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import {
-  IsDateString,
-  IsDecimal,
-  IsInt,
-  IsString,
-  Min,
-} from 'class-validator';
+import { IsDateString, IsDecimal, IsInt, IsString, Min } from 'class-validator';
 
 export class CreateRideDto {
-
   @ApiProperty({
     description: 'Local de origem da carona',
     example: 'Garanhuns - PE',

@@ -34,12 +34,12 @@ export class TypeormRefreshTokenRepository implements RefreshTokenRepository {
 
   async findByUserId(userId: string): Promise<RefreshToken | null> {
     const result = await this.repository.findOne({
-      where: { 
+      where: {
         user: {
-            id: userId,
+          id: userId,
+        },
       },
-    },
-    relations: ['user']
+      relations: ['user'],
     });
     return result ? RefreshTokenMapper.toDomain(result) : null;
   }
@@ -47,5 +47,4 @@ export class TypeormRefreshTokenRepository implements RefreshTokenRepository {
   async delete(id: string): Promise<void> {
     await this.repository.delete(id);
   }
-
 }

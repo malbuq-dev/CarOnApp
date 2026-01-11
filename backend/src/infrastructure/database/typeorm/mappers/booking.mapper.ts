@@ -7,11 +7,11 @@ import { RideMapper } from './ride.mapper';
 export class BookingMapper {
   static toDomain(entity: TypeormBookingEntity): Booking {
     const booking = Booking.rehydrate(
-        entity.id,
-        entity.seatsBooked,
-        entity.status,
-        entity.rideId,
-        entity.passengerId
+      entity.id,
+      entity.seatsBooked,
+      entity.status,
+      entity.rideId,
+      entity.passengerId,
     );
     booking.createdAt = dayjs(entity.createdAt).toDate();
     booking.updatedAt = dayjs(entity.updatedAt).toDate();

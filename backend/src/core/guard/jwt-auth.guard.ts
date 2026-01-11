@@ -30,7 +30,7 @@ export class JwtAuthGuard implements CanActivate {
       Logger.error(e.message);
       throw new UnauthorizedException('Invalid Token');
     }
-    
+
     return true;
   }
 

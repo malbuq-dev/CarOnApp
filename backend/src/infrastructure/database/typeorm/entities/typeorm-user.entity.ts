@@ -5,7 +5,7 @@ import { TypeormBaseEntity } from './typeorm-base.entity';
 export class TypeormUserEntity extends TypeormBaseEntity {
   @Column({ nullable: false })
   public firstName: string;
-  
+
   @Column({ nullable: false })
   public lastName: string;
 
@@ -14,5 +14,4 @@ export class TypeormUserEntity extends TypeormBaseEntity {
 
   @Column({ nullable: false })
   public password: string;
-
 }

@@ -1,7 +1,7 @@
-import { Money } from "../value-objects/money.value-object";
-import { Base } from "./base.entity";
-import { Booking } from "./booking.entity";
-import { User } from "./user.entity";
+import { Money } from '../value-objects/money.value-object';
+import { Base } from './base.entity';
+import { Booking } from './booking.entity';
+import { User } from './user.entity';
 
 export class Ride extends Base {
   driverId: string;
@@ -34,7 +34,7 @@ export class Ride extends Base {
 
   get occupiedSeats(): number {
     return this.bookings
-      .filter(b => b.isApproved())
+      .filter((b) => b.isApproved())
       .reduce((sum, b) => sum + b.seatsBooked, 0);
   }
 
@@ -42,7 +42,7 @@ export class Ride extends Base {
     return this.totalSeats - this.occupiedSeats;
   }
 
-  hasEnoughSeats(seatsBooked: number): boolean { 
+  hasEnoughSeats(seatsBooked: number): boolean {
     return this.availableSeats >= seatsBooked;
   }
 
@@ -51,7 +51,7 @@ export class Ride extends Base {
   }
 
   approveBooking(bookingId: string) {
-    const booking = this.bookings.find(b => b.id === bookingId);
+    const booking = this.bookings.find((b) => b.id === bookingId);
 
     if (!booking) {
       throw new Error('Reserva não encontrada');
@@ -69,15 +69,15 @@ export class Ride extends Base {
   }
 
   static rehydrate(
-      id: string,
-      driverId: string,
-      origin: string,
-      destination: string,
-      departureTime: Date,
-      arrivalTime: Date,
-      totalSeats: number,
-      price: Money,
-      bookings: Booking[],
+    id: string,
+    driverId: string,
+    origin: string,
+    destination: string,
+    departureTime: Date,
+    arrivalTime: Date,
+    totalSeats: number,
+    price: Money,
+    bookings: Booking[],
   ): Ride {
     const ride = new Ride(
       driverId,
@@ -94,6 +94,4 @@ export class Ride extends Base {
 
     return ride;
   }
-
 }
-

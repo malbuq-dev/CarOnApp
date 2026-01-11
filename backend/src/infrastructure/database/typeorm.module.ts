@@ -1,5 +1,10 @@
 import { Module } from '@nestjs/common';
-import { BOOKINGS_REPOSITORY, REFRESH_TOKEN_REPOSITORY, RIDES_REPOSITORY, USERS_REPOSITORY } from 'src/domain/repositories/repository.tokens';
+import {
+  BOOKINGS_REPOSITORY,
+  REFRESH_TOKEN_REPOSITORY,
+  RIDES_REPOSITORY,
+  USERS_REPOSITORY,
+} from 'src/domain/repositories/repository.tokens';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeormRefreshTokenRepository } from './typeorm/repositories/typeorm-refresh-token.repository';
 import { TypeormUserRepository } from './typeorm/repositories/typeorm-user.repository';
@@ -11,23 +16,23 @@ import { TypeormBookingsRepository } from './typeorm/repositories/typeorm-bookin
 import { TypeormBookingEntity } from './typeorm/entities/typeorm-booking.entity';
 
 const REPOSITORIES = [
-    {
-        provide: USERS_REPOSITORY,
-        useClass: TypeormUserRepository,
-    },
-    {
-        provide: RIDES_REPOSITORY,
-        useClass: TypeormRideRepository,
-    },
-    {
-        provide: BOOKINGS_REPOSITORY,
-        useClass: TypeormBookingsRepository,
-    },
-    {
-        provide: REFRESH_TOKEN_REPOSITORY,
-        useClass: TypeormRefreshTokenRepository,
-    },
-]
+  {
+    provide: USERS_REPOSITORY,
+    useClass: TypeormUserRepository,
+  },
+  {
+    provide: RIDES_REPOSITORY,
+    useClass: TypeormRideRepository,
+  },
+  {
+    provide: BOOKINGS_REPOSITORY,
+    useClass: TypeormBookingsRepository,
+  },
+  {
+    provide: REFRESH_TOKEN_REPOSITORY,
+    useClass: TypeormRefreshTokenRepository,
+  },
+];
 
 @Module({
   imports: [

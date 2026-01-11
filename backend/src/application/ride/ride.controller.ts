@@ -9,7 +9,7 @@ import {
   Post,
   Query,
   Req,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
@@ -66,10 +66,7 @@ export class RideController {
   @Get('/me')
   @ApiOperation({ summary: 'Lista todas as caronas do usuário autenticado' })
   @UseGuards(JwtAuthGuard)
-  async fetchMyRides(
-    @Query() query: PaginationFilterType,
-    @Req() req
-  ) {
+  async fetchMyRides(@Query() query: PaginationFilterType, @Req() req) {
     const result = await this.fetchUserRidesUseCase.execute({
       userId: req.userId,
       query,
@@ -109,7 +106,7 @@ export class RideController {
   async update(
     @Param('id', ParseUUIDPipe) rideId: string,
     @Body() updateRideDto: UpdateRideDto,
-    @Req() req
+    @Req() req,
   ) {
     const result = await this.updateRideUseCase.execute({
       rideId,
@@ -126,10 +123,7 @@ export class RideController {
   @Delete(':id')
   @ApiOperation({ summary: 'Remove uma carona pelo ID' })
   @UseGuards(JwtAuthGuard)
-  async delete(
-    @Param('id', ParseUUIDPipe) rideId: string,
-    @Req() req
-  ) {
+  async delete(@Param('id', ParseUUIDPipe) rideId: string, @Req() req) {
     await this.deleteRideUseCase.execute({
       rideId,
       userId: req.userId,
@@ -140,7 +134,8 @@ export class RideController {
     };
   }
 }
-function ApiBarrearAuth(): (target: typeof RideController) => void | typeof RideController {
-    throw new Error('Function not implemented.');
+function ApiBarrearAuth(): (
+  target: typeof RideController,
+) => void | typeof RideController {
+  throw new Error('Function not implemented.');
 }
-

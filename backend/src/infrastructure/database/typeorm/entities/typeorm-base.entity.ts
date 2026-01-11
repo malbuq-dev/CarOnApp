@@ -10,9 +10,9 @@ export class TypeormBaseEntity {
   @Generated('uuid')
   id: string;
 
-  @CreateDateColumn({ type: 'timestamptz'})
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: string;
 
-  @UpdateDateColumn({ type: 'timestamptz'})
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: string;
 }

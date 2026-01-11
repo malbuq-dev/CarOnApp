@@ -18,6 +18,6 @@ import { SearchRidesUseCase } from './use-cases/search-rides.use-case';
     GetRideUseCase,
     FetchUserRidesUseCase,
     SearchRidesUseCase,
-  ]
+  ],
 })
 export class RidesModule {}

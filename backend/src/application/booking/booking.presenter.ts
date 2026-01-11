@@ -1,13 +1,13 @@
-import { Booking } from "src/domain/entities/booking.entity";
+import { Booking } from 'src/domain/entities/booking.entity';
 
 export class BookingPresenter {
   static toHTTP(booking: Booking) {
     return {
       passenger: {
-        id: booking.passengerId
+        id: booking.passengerId,
       },
       ride: {
-        id: booking.rideId
+        id: booking.rideId,
       },
       id: booking.id,
       seatsBooked: booking.seatsBooked,
