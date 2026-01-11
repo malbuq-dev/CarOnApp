@@ -1,15 +1,27 @@
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { TypeormUserEntity } from "./typeorm-user.entity";
 import { TypeormBaseEntity } from "./typeorm-base.entity";
+import { TypeormBookingEntity } from "./typeorm-booking.entity";
 
 @Entity('rides')
 export class TypeormRideEntity extends TypeormBaseEntity {
-    @ManyToOne(() => TypeormUserEntity, {
+    @Column({ name: 'driver_id' })
+    driverId: string;
+
+    @ManyToOne(
+        () => TypeormUserEntity, {
         onDelete: 'CASCADE',
         nullable: false
     })
     @JoinColumn({ name: 'driver_id' })
     driver: TypeormUserEntity;
+
+    @OneToMany(
+        () => TypeormBookingEntity,
+        booking => booking.ride,
+        { cascade: true }
+    )
+    bookings: TypeormBookingEntity[];
 
     @Column()
     origin: string;

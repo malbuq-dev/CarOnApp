@@ -2,7 +2,7 @@ import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import type { RefreshTokenRepository } from "src/domain/repositories/refresh-token.repository";
 import { REFRESH_TOKEN_REPOSITORY } from "src/domain/repositories/repository.tokens";
 import { TokenService } from "../services/tokens.service";
-import { Tokens } from "src/domain/entities/tokens";
+import { Tokens } from "src/domain/entities/tokens.entity";
 import { RESPONSES } from "src/core/response/response.messages";
 
 export interface RefreshTokensRequest {

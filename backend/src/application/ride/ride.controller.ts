@@ -94,7 +94,6 @@ export class RideController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Busca uma carona pelo ID' })
-  @UseGuards(JwtAuthGuard)
   async get(@Param('id', ParseUUIDPipe) id: string) {
     const result = await this.getRideUseCase.execute({ id });
 

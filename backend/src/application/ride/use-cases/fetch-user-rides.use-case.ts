@@ -2,7 +2,7 @@ import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { PaginationFilterType } from "src/core/types/pagination-filter.type";
 import { Ride } from "src/domain/entities/ride.entity";
 import { RIDES_REPOSITORY } from "src/domain/repositories/repository.tokens";
-import type { RidesRepository } from "src/domain/repositories/ride.repository";
+import type { RidesRepository } from "src/domain/repositories/rides.repository";
 
 export interface FetchUserRidesRequest {
     userId: string,

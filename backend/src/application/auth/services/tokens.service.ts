@@ -5,7 +5,7 @@ import { User } from "src/domain/entities/user.entity";
 import { v4 as uuidv4 } from 'uuid';
 import type { RefreshTokenRepository } from "src/domain/repositories/refresh-token.repository";
 import { REFRESH_TOKEN_REPOSITORY } from "src/domain/repositories/repository.tokens";
-import { Tokens } from "src/domain/entities/tokens";
+import { Tokens } from "src/domain/entities/tokens.entity";
 
 @Injectable()
 export class TokenService {

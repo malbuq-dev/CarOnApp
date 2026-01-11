@@ -20,4 +20,4 @@ import { SearchRidesUseCase } from './use-cases/search-rides.use-case';
     SearchRidesUseCase,
   ]
 })
-export class RideModule {}
+export class RidesModule {}

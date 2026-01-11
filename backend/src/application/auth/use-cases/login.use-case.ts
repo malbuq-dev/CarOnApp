@@ -9,7 +9,7 @@ import { RefreshToken } from "src/domain/entities/refresh-token.entity";
 import type { PasswordHasher } from "src/domain/security/password-hasher";
 import { PASSWORD_HASHER } from "src/domain/security/security.tokens";
 import { TokenService } from "../services/tokens.service";
-import { Tokens } from "src/domain/entities/tokens";
+import { Tokens } from "src/domain/entities/tokens.entity";
 import { RESPONSES } from "src/core/response/response.messages";
 
 export interface LoginUseCaseRequest {

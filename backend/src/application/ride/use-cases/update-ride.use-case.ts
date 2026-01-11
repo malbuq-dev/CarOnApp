@@ -2,7 +2,7 @@ import { BadRequestException, Inject, Injectable, NotFoundException } from "@nes
 import { RESPONSES } from "src/core/response/response.messages";
 import { Ride } from "src/domain/entities/ride.entity";
 import { RIDES_REPOSITORY, USERS_REPOSITORY } from "src/domain/repositories/repository.tokens";
-import type { RidesRepository } from "src/domain/repositories/ride.repository";
+import type { RidesRepository } from "src/domain/repositories/rides.repository";
 import { Money } from "src/domain/value-objects/money.value-object";
 
 export interface UpdateRideRequest {

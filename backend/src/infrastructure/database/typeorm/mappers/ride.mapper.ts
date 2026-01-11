@@ -5,28 +5,30 @@ import { TypeormRideEntity } from '../entities/typeorm-ride.entity';
 import { Ride } from 'src/domain/entities/ride.entity';
 import { UserMapper } from './user.mapper';
 import { Money } from 'src/domain/value-objects/money.value-object';
+import { BookingMapper } from './booking.mapper';
+import { Booking } from 'src/domain/entities/booking.entity';
 
 export class RideMapper {
   static toDomain(entity: TypeormRideEntity): Ride {
-    const ride = new Ride(
-      UserMapper.toDomain(entity.driver),
+    const bookings = entity.bookings?.map(BookingMapper.toDomain) ?? [];
+
+    return Ride.rehydrate(
+      entity.id,
+      entity.driverId,
       entity.origin,
       entity.destination,
       entity.departureTime,
       entity.arrivalTime,
       entity.totalSeats,
       Money.fromCents(entity.priceInCents),
+      bookings,
     );
-    ride.id = entity.id;
-    ride.createdAt = dayjs(entity.createdAt).toDate();
-    ride.updatedAt = dayjs(entity.updatedAt).toDate();
-    return ride;
   }
-
+  
   static toPersistence(ride: Ride): TypeormRideEntity {
     const entity = new TypeormRideEntity();
     entity.id = ride.id;
-    entity.driver = UserMapper.toPersistence(ride.driver);
+    entity.driverId = ride.driverId;
     entity.origin = ride.origin;
     entity.destination = ride.destination;
     entity.arrivalTime = ride.arrivalTime;

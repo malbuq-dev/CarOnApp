@@ -29,5 +29,16 @@ export const RESPONSES = {
     ARRIVAL_AND_DEPARTURE_TIME_INCONSISTENT: 'Os horários de saída e chegada da carona estão inválidos',
     DRIVER_NOT_FOUND: 'O motorista associado a carona não foi encontrado',
   },
+
+  BOOKINGS: {
+    NOT_FOUND: 'Reserva não encontrado',
+    CREATED_SUCCESSFULLY: 'Reserva criado com sucesso',
+    UPDATED_SUCCESSFULLY: 'Reserva atualizada com sucesso',
+    FETCHED_SUCCESSFULLY: 'Reservas recuperadas com sucesso',
+    FETCH_BY_ID_SUCCESSFULLY: 'Reserva recuperada com sucesso',
+    DELETED_SUCCESSFULLY: 'Reserva deletada com sucesso',
+    PASSENGER_NOT_FOUND: 'O passageiro não foi encontrado',
+    NO_AVALIABLE_SEATS: 'Não há acentos suficientes na carona',
+  },
   
 }

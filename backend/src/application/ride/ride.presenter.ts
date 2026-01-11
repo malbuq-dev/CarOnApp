@@ -4,7 +4,7 @@ export class RidePresenter {
   static toHTTP(ride: Ride) {
     return {
       driver: {
-        id: ride.driver.id
+        id: ride.driverId
       },
       id: ride.id,
       origin: ride.origin,

@@ -1,4 +1,4 @@
-import { Tokens } from 'src/domain/entities/tokens';
+import { Tokens } from 'src/domain/entities/tokens.entity';
 
 export class TokensPresenter {
   static toHTTP(tokens: Tokens) {

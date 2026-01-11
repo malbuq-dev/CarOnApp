@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { Ride } from "src/domain/entities/ride.entity";
-import { RidesRepository } from "src/domain/repositories/ride.repository";
+import { RidesRepository } from "src/domain/repositories/rides.repository";
 import { ILike, MoreThanOrEqual, Repository } from "typeorm";
 import { TypeormRideEntity } from "../entities/typeorm-ride.entity";
 import { RideMapper } from "../mappers/ride.mapper";
@@ -62,6 +62,7 @@ export class TypeormRideRepository implements RidesRepository {
 
         const findOptions: any = {
             relations: ['driver'],
+            driver: {id: authorId},
             take: limit,
             skip: offset
         }
@@ -89,7 +90,20 @@ export class TypeormRideRepository implements RidesRepository {
 
         return RideMapper.toDomain(ride);
     }
-        
+
+    async findByIdWithBookings(id: string): Promise<Ride | null> {
+        const ride = await this.repository.findOne({
+            where: { id },
+            relations: ['driver', 'bookings'],
+        });
+
+        if (!ride) {
+            return null;
+        }
+
+        return RideMapper.toDomain(ride);
+    }
+
     async findByIdAndAuthorId(id: string, authorId: string): Promise<Ride | null> {
         const entity = await this.repository.findOne({
             where: {
