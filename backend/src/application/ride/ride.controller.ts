@@ -30,6 +30,7 @@ import { RidePresenter } from './ride.presenter';
 import { RESPONSES } from 'src/core/response/response.messages';
 import { AcceptBookingUseCase } from './use-cases/accept-booking.use-case';
 import { PaginationQueryDto } from 'src/core/dtos/pagination-query.dto';
+import { DeclineBookingUseCase } from './use-cases/decline-booking.use-case copy';
 
 @ApiTags('Rides')
 @ApiBearerAuth()
@@ -43,6 +44,7 @@ export class RideController {
     private readonly fetchUserRidesUseCase: FetchUserRidesUseCase,
     private readonly searchRidesUseCase: SearchRidesUseCase,
     private readonly acceptBookingUseCase: AcceptBookingUseCase,
+    private readonly declineBookingUseCase: DeclineBookingUseCase,
   ) {}
 
   @Post()
@@ -142,10 +144,26 @@ export class RideController {
   async acceptBooking(
     @Param('rideId') rideId: string,
     @Param('bookingId') bookingId: string,
+    @Req() req,
   ) {
-      await this.acceptBookingUseCase.execute({
+    await this.acceptBookingUseCase.execute({
         rideId,
         bookingId,
+        userId: req.userId,
+    });
+  }
+
+  @Post('/:rideId/bookings/:bookingId/decline')
+  @UseGuards(JwtAuthGuard)
+  async declineBooking(
+    @Param('rideId') rideId: string,
+    @Param('bookingId') bookingId: string,
+    @Req() req,
+  ) {
+      await this.declineBookingUseCase.execute({
+        rideId,
+        bookingId,
+        userId: req.userId
     });
   }
 }

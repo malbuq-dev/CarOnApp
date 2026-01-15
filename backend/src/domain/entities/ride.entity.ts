@@ -68,6 +68,20 @@ export class Ride extends Base {
     booking.approve();
   }
 
+  declineBooking(bookingId: string) {
+    const booking = this.bookings.find((b) => b.id === bookingId);
+
+    if (!booking) {
+      throw new Error('Reserva não encontrada');
+    }
+
+    if (booking.isDeclined()) {
+      return null;
+    }
+
+    booking.decline();
+  }
+
   static rehydrate(
     id: string,
     driverId: string,

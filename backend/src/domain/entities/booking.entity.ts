@@ -37,6 +37,14 @@ export class Booking extends Base {
     return this.status === BookingStatus.APPROVED;
   }
 
+  isDeclined(): boolean {
+    return this.status === BookingStatus.DECLINED;
+  }
+
+  isCanceled(): boolean {
+    return this.status === BookingStatus.CANCELED;
+  }
+
   static rehydrate(
     id: string,
     seatsBooked: number,

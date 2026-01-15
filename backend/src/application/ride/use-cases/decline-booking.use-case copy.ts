@@ -1,23 +1,22 @@
 import { BadRequestException, ForbiddenException, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { RESPONSES } from "src/core/response/response.messages";
-import type { BookingsRepository } from "src/domain/repositories/bookings.repository";
 import { BOOKINGS_REPOSITORY, RIDES_REPOSITORY } from "src/domain/repositories/repository.tokens";
 import type { RidesRepository } from "src/domain/repositories/rides.repository";
 
-export interface AcceptBookingRequest {
+export interface DeclineBookingRequest {
     rideId: string,
     bookingId: string,
-    userId: string,
+    userId: string
 }
 
 @Injectable()
-export class AcceptBookingUseCase {
+export class DeclineBookingUseCase {
     constructor(
         @Inject(RIDES_REPOSITORY)
         private readonly ridesRespository: RidesRepository,
     ) {}
 
-    async execute(request: AcceptBookingRequest) {
+    async execute(request: DeclineBookingRequest) {
         const {
             rideId,
             bookingId,
@@ -34,7 +33,7 @@ export class AcceptBookingUseCase {
             throw new ForbiddenException(RESPONSES.RIDES.NOT_RIDE_OWNER);
         }
 
-        ride.approveBooking(bookingId);
+        ride.declineBooking(bookingId);
 
         await this.ridesRespository.save(ride);
     }

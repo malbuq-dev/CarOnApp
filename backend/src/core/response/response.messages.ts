@@ -22,13 +22,13 @@ export const RESPONSES = {
   },
   RIDES: {
     NOT_FOUND: 'Carona não encontrado',
+    NOT_RIDE_OWNER: 'Apenas o dono da carona pode acessar esse recurso',
     CREATED_SUCCESSFULLY: 'Carona criado com sucesso',
     UPDATED_SUCCESSFULLY: 'Carona atualizada com sucesso',
     FETCHED_SUCCESSFULLY: 'Caronas recuperadas com sucesso',
     FETCH_BY_ID_SUCCESSFULLY: 'Carona recuperada com sucesso',
     DELETED_SUCCESSFULLY: 'Carona deletada com sucesso',
-    ARRIVAL_AND_DEPARTURE_TIME_INCONSISTENT:
-      'Os horários de saída e chegada da carona estão inválidos',
+    ARRIVAL_AND_DEPARTURE_TIME_INCONSISTENT:'Os horários de saída e chegada da carona estão inválidos',
     DRIVER_NOT_FOUND: 'O motorista associado a carona não foi encontrado',
   },
 
