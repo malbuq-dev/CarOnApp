@@ -32,7 +32,7 @@ export class GetRideUseCase {
   async execute(createRideRequest: GetRideRequest): Promise<GetRideResponse> {
     const { id } = createRideRequest;
 
-    const ride = await this.ridesRepository.findById(id);
+    const ride = await this.ridesRepository.findByIdWithBookings(id);
 
     if (!ride) {
       throw new NotFoundException(RESPONSES.RIDES.NOT_FOUND);

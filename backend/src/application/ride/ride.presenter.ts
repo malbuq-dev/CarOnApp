@@ -2,6 +2,13 @@ import { Ride } from 'src/domain/entities/ride.entity';
 
 export class RidePresenter {
   static toHTTP(ride: Ride) {
+    const approvedBookings = ride.approvedBookings?.map(booking => {
+      return {
+        id: booking.id,
+        passengerId: booking.passengerId,
+      };
+    });
+
     return {
       driver: {
         id: ride.driverId,
@@ -13,6 +20,7 @@ export class RidePresenter {
       arrivalTime: ride.arrivalTime.toISOString(),
       totalSeats: ride.totalSeats,
       price: ride.price.toDecimal(),
+      approvedBookings,
     };
   }
 

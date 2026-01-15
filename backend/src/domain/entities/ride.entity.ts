@@ -82,6 +82,10 @@ export class Ride extends Base {
     booking.decline();
   }
 
+  get approvedBookings(): Booking[] {
+    return this.bookings.filter(b => b.isApproved());
+  }
+
   static rehydrate(
     id: string,
     driverId: string,
