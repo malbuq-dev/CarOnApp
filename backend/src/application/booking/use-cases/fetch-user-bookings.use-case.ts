@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PaginationParams } from 'src/core/types/pagination-params.interface';
-import { PaginatedResponse } from 'src/core/types/pagination-response.interface';
+import { PaginationParams } from 'src/core/interfaces/pagination-params.interface';
+import { PaginatedResponse } from 'src/core/interfaces/pagination-response.interface';
 import { Booking } from 'src/domain/entities/booking.entity';
 import type { BookingsRepository } from 'src/domain/repositories/bookings.repository';
 import {

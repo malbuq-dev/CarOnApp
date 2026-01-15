@@ -29,7 +29,7 @@ import { SearchRidesUseCase } from './use-cases/search-rides.use-case';
 import { RidePresenter } from './ride.presenter';
 import { RESPONSES } from 'src/core/response/response.messages';
 import { AcceptBookingUseCase } from './use-cases/accept-booking.use-case';
-import type { PaginationParams } from 'src/core/types/pagination-params.interface';
+import { PaginationQueryDto } from 'src/core/dtos/pagination-query.dto';
 
 @ApiTags('Rides')
 @ApiBearerAuth()
@@ -68,10 +68,10 @@ export class RideController {
   @Get('/me')
   @ApiOperation({ summary: 'Lista todas as caronas do usuário autenticado' })
   @UseGuards(JwtAuthGuard)
-  async fetchMyRides(@Query() query: PaginationParams, @Req() req) {
+  async fetchMyRides(@Query() query: PaginationQueryDto, @Req() req) {
     const { items, meta } = await this.fetchUserRidesUseCase.execute({
       userId: req.userId,
-      query,
+      ...query,
     });
 
     return {

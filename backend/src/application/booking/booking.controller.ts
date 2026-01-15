@@ -5,8 +5,8 @@ import { CreateBookingUseCase } from './use-cases/create-booking.use-case';
 import { CreateBookingDto } from './dtos/create-booking.dto';
 import { BookingPresenter } from './booking.presenter';
 import { GetBookingUseCase } from './use-cases/get-booking.use-case';
-import type { PaginationParams } from 'src/core/types/pagination-params.interface';
 import { FetchUserBookingsUseCase } from './use-cases/fetch-user-bookings.use-case';
+import { PaginationQueryDto } from 'src/core/dtos/pagination-query.dto';
 
 @Controller('bookings')
 export class BookingController {
@@ -36,7 +36,7 @@ export class BookingController {
   @Get('/me')
   @UseGuards(JwtAuthGuard)
   async myBookings(
-    @Query() pagination: PaginationParams,
+    @Query() pagination: PaginationQueryDto,
     @Req() req 
   ) {
     const { items, meta } = await this.fetchUserBookingsUseCase.execute({

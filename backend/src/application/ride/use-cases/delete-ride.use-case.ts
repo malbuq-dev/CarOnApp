@@ -2,10 +2,8 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { RESPONSES } from 'src/core/response/response.messages';
 import {
   RIDES_REPOSITORY,
-  USERS_REPOSITORY,
 } from 'src/domain/repositories/repository.tokens';
 import type { RidesRepository } from 'src/domain/repositories/rides.repository';
-import type { UsersRepository } from 'src/domain/repositories/users.repository';
 
 export interface DeleteRideRequest {
   rideId: string;

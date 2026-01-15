@@ -1,6 +1,6 @@
 export interface PaginationParams {
   page?: number;
   limit?: number;
-  sortBy?: 'createdAt';
+  sortBy?: string;
   sortOrder?: 'asc' | 'desc';
 };

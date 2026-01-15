@@ -1,6 +1,6 @@
-import { PaginationParams } from 'src/core/types/pagination-params.interface';
+import { PaginationParams } from 'src/core/interfaces/pagination-params.interface';
 import { Ride } from '../entities/ride.entity';
-import { PaginatedResponse } from 'src/core/types/pagination-response.interface';
+import { PaginatedResponse } from 'src/core/interfaces/pagination-response.interface';
 
 export interface RidesRepository {
   findById(id: string): Promise<Ride | null>;

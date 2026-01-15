@@ -5,8 +5,8 @@ import { ILike, MoreThanOrEqual, Repository } from 'typeorm';
 import { TypeormRideEntity } from '../entities/typeorm-ride.entity';
 import { RideMapper } from '../mappers/ride.mapper';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PaginationParams } from 'src/core/types/pagination-params.interface';
-import { PaginatedResponse } from 'src/core/types/pagination-response.interface';
+import { PaginationParams } from 'src/core/interfaces/pagination-params.interface';
+import { PaginatedResponse } from 'src/core/interfaces/pagination-response.interface';
 
 @Injectable()
 export class TypeormRideRepository implements RidesRepository {

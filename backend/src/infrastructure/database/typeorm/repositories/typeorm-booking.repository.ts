@@ -6,8 +6,8 @@ import { Repository } from 'typeorm';
 import { TypeormBookingEntity } from '../entities/typeorm-booking.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BookingMapper } from '../mappers/booking.mapper';
-import { PaginationParams } from 'src/core/types/pagination-params.interface';
-import { PaginatedResponse } from 'src/core/types/pagination-response.interface';
+import { PaginationParams } from 'src/core/interfaces/pagination-params.interface';
+import { PaginatedResponse } from 'src/core/interfaces/pagination-response.interface';
 
 @Injectable()
 export class TypeormBookingsRepository implements BookingsRepository {
