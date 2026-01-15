@@ -5,7 +5,8 @@ import { ILike, MoreThanOrEqual, Repository } from 'typeorm';
 import { TypeormRideEntity } from '../entities/typeorm-ride.entity';
 import { RideMapper } from '../mappers/ride.mapper';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PaginationFilterType } from 'src/core/types/pagination-filter.type';
+import { PaginationParams } from 'src/core/types/pagination-params.interface';
+import { PaginatedResponse } from 'src/core/types/pagination-response.interface';
 
 @Injectable()
 export class TypeormRideRepository implements RidesRepository {
@@ -56,11 +57,12 @@ export class TypeormRideRepository implements RidesRepository {
   }
 
   async findManyByAuthor(
-    query: PaginationFilterType,
+    pagination: PaginationParams,
     authorId: string,
-  ): Promise<Ride[]> {
-    const limit = query.limit ?? 50; // TO-DO: fazer isso aqui sair do config file
-    const offset = query.offset ?? 0;
+  ): Promise<PaginatedResponse<Ride>> {
+    const limit = pagination.limit ?? 50; // TO-DO: fazer isso aqui sair do config file
+    const page = pagination.page && pagination.page > 0 ? pagination.page : 1;
+    const offset = (page - 1) * limit;
 
     const findOptions: any = {
       relations: ['driver'],
@@ -69,15 +71,30 @@ export class TypeormRideRepository implements RidesRepository {
       skip: offset,
     };
 
-    if (query.sortBy && query.sortOrder) {
+    if (pagination.sortBy && pagination.sortOrder) {
       findOptions.order = {
-        [query.sortBy]: query.sortOrder.toUpperCase(),
+        [pagination.sortBy]: pagination.sortOrder.toUpperCase(),
       };
     }
 
-    const rides = await this.repository.find(findOptions);
+    const [ entities, totalItems ] = await this.repository.findAndCount(findOptions);
 
-    return rides.map((ride) => RideMapper.toDomain(ride));
+    const items = entities.map(entity =>
+      RideMapper.toDomain(entity)
+    );
+
+    const totalPages = Math.ceil(totalItems / limit);
+
+    const meta = {
+      page,
+      limit,
+      totalItems,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+    };
+
+    return { items, meta };
   }
 
   async findById(id: string): Promise<Ride | null> {

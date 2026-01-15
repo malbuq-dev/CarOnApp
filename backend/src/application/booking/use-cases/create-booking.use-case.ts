@@ -1,6 +1,6 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { RESPONSES } from 'src/core/response/response.messages';
-import { Booking, BookingStatus } from 'src/domain/entities/booking.entity';
+import { Booking } from 'src/domain/entities/booking.entity';
 import type { BookingsRepository } from 'src/domain/repositories/bookings.repository';
 import {
   BOOKINGS_REPOSITORY,
@@ -43,6 +43,10 @@ export class CreateBookingUseCase {
 
     if (!ride) {
       throw new NotFoundException(RESPONSES.RIDES.NOT_FOUND);
+    }
+    
+    if (ride.driverId === passengerId) {
+      throw new BadRequestException(RESPONSES.BOOKINGS.RIDE_OWNER_CANT_BOOK)
     }
 
     if (!ride.hasEnoughSeats(seatsBooked)) {

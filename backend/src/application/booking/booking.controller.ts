@@ -1,17 +1,27 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/core/guard/jwt-auth.guard';
 import { RESPONSES } from 'src/core/response/response.messages';
 import { CreateBookingUseCase } from './use-cases/create-booking.use-case';
 import { CreateBookingDto } from './dtos/create-booking.dto';
 import { BookingPresenter } from './booking.presenter';
+import { GetBookingUseCase } from './use-cases/get-booking.use-case';
+import type { PaginationParams } from 'src/core/types/pagination-params.interface';
+import { FetchUserBookingsUseCase } from './use-cases/fetch-user-bookings.use-case';
 
 @Controller('bookings')
 export class BookingController {
-  constructor(private readonly createBookingUseCase: CreateBookingUseCase) {}
+  constructor(
+    private readonly createBookingUseCase: CreateBookingUseCase,
+    private readonly getBookingUseCase: GetBookingUseCase,
+    private readonly fetchUserBookingsUseCase: FetchUserBookingsUseCase,
+  ) {}
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  async create(@Body() createBookingDto: CreateBookingDto, @Req() req) {
+  async create(
+    @Body() createBookingDto: CreateBookingDto,
+    @Req() req
+  ) {
     const result = await this.createBookingUseCase.execute({
       passengerId: req.userId,
       ...createBookingDto,
@@ -21,5 +31,40 @@ export class BookingController {
       message: RESPONSES.BOOKINGS.CREATED_SUCCESSFULLY,
       data: BookingPresenter.toHTTP(result.booking),
     };
+  }
+  
+  @Get('/me')
+  @UseGuards(JwtAuthGuard)
+  async myBookings(
+    @Query() pagination: PaginationParams,
+    @Req() req 
+  ) {
+    const { items, meta } = await this.fetchUserBookingsUseCase.execute({
+      userId: req.userId,
+      pagination
+    });
+
+    return {
+      message: RESPONSES.BOOKINGS.FETCHED_SUCCESSFULLY,
+      bookings: BookingPresenter.toHTTPList(items),
+      meta: meta
+    }
+  }
+
+  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  async get(
+    @Param('id') id: string,
+    @Req() req
+  ) {
+    const result = await this.getBookingUseCase.execute({
+      bookingId: id,
+      userId:  req.userId
+    });
+
+    return {
+      message: RESPONSES.BOOKINGS.FETCH_BY_ID_SUCCESSFULLY,
+      data: BookingPresenter.toHTTP(result.booking)
+    }
   }
 }

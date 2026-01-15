@@ -9,11 +9,14 @@ export class TypeormBookingEntity extends TypeormBaseEntity {
   @Column({ name: 'ride_id' })
   rideId: string;
 
-  @ManyToOne(() => TypeormRideEntity, (ride) => ride.bookings, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(
+    () => TypeormRideEntity,
+    ride => ride.bookings,
+    { onDelete: 'CASCADE' }
+  )
   @JoinColumn({ name: 'ride_id' })
   ride: TypeormRideEntity;
+
 
   @Column({ name: 'passenger_id' })
   passengerId: string;

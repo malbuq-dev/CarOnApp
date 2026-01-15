@@ -58,7 +58,7 @@ export class Ride extends Base {
     }
 
     if (booking.isApproved()) {
-      return;
+      return null;
     }
 
     if (this.availableSeats < booking.seatsBooked) {

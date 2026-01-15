@@ -1,14 +1,15 @@
-import { PaginationFilterType } from 'src/core/types/pagination-filter.type';
+import { PaginationParams } from 'src/core/types/pagination-params.interface';
 import { Ride } from '../entities/ride.entity';
+import { PaginatedResponse } from 'src/core/types/pagination-response.interface';
 
 export interface RidesRepository {
   findById(id: string): Promise<Ride | null>;
   save(ride: Ride): Promise<void>;
   findByIdAndAuthorId(id: string, authorId: string): Promise<Ride | null>;
   findManyByAuthor(
-    query: PaginationFilterType,
+    pagination: PaginationParams,
     authorId: string,
-  ): Promise<Ride[]>;
+  ): Promise<PaginatedResponse<Ride>>;
   deleteByIdAndAuthorId(id: string, authorId: string): Promise<void>;
   searchRides(searchFilter: {
     origin: string;

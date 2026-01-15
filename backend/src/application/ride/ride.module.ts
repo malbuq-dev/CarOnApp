@@ -7,6 +7,7 @@ import { UpdateRideUseCase } from './use-cases/update-ride.use-case';
 import { GetRideUseCase } from './use-cases/get-ride.use-case';
 import { FetchUserRidesUseCase } from './use-cases/fetch-user-rides.use-case';
 import { SearchRidesUseCase } from './use-cases/search-rides.use-case';
+import { AcceptBookingUseCase } from './use-cases/accept-booking.use-case';
 
 @Module({
   imports: [InfrastructureModule],
@@ -18,6 +19,7 @@ import { SearchRidesUseCase } from './use-cases/search-rides.use-case';
     GetRideUseCase,
     FetchUserRidesUseCase,
     SearchRidesUseCase,
+    AcceptBookingUseCase,
   ],
 })
 export class RidesModule {}

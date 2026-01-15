@@ -15,9 +15,14 @@ export class TypeormRideEntity extends TypeormBaseEntity {
   @JoinColumn({ name: 'driver_id' })
   driver: TypeormUserEntity;
 
-  @OneToMany(() => TypeormBookingEntity, (booking) => booking.ride, {
-    cascade: true,
-  })
+  @OneToMany(
+    () => TypeormBookingEntity,
+    booking => booking.ride,
+    {
+      cascade: true,
+      eager: false,
+    },
+  )
   bookings: TypeormBookingEntity[];
 
   @Column()

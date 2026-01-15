@@ -18,7 +18,6 @@ import { UpdateRideDto } from './dtos/update-ride.dto';
 import { SearchRidesQueryDto } from './dtos/search-query.dto';
 
 import { JwtAuthGuard } from 'src/core/guard/jwt-auth.guard';
-import type { PaginationFilterType } from 'src/core/types/pagination-filter.type';
 
 import { CreateRideUseCase } from './use-cases/create-ride.use-case';
 import { DeleteRideUseCase } from './use-cases/delete-ride.use-case';
@@ -29,6 +28,8 @@ import { SearchRidesUseCase } from './use-cases/search-rides.use-case';
 
 import { RidePresenter } from './ride.presenter';
 import { RESPONSES } from 'src/core/response/response.messages';
+import { AcceptBookingUseCase } from './use-cases/accept-booking.use-case';
+import type { PaginationParams } from 'src/core/types/pagination-params.interface';
 
 @ApiTags('Rides')
 @ApiBearerAuth()
@@ -41,6 +42,7 @@ export class RideController {
     private readonly getRideUseCase: GetRideUseCase,
     private readonly fetchUserRidesUseCase: FetchUserRidesUseCase,
     private readonly searchRidesUseCase: SearchRidesUseCase,
+    private readonly acceptBookingUseCase: AcceptBookingUseCase,
   ) {}
 
   @Post()
@@ -66,15 +68,16 @@ export class RideController {
   @Get('/me')
   @ApiOperation({ summary: 'Lista todas as caronas do usuário autenticado' })
   @UseGuards(JwtAuthGuard)
-  async fetchMyRides(@Query() query: PaginationFilterType, @Req() req) {
-    const result = await this.fetchUserRidesUseCase.execute({
+  async fetchMyRides(@Query() query: PaginationParams, @Req() req) {
+    const { items, meta } = await this.fetchUserRidesUseCase.execute({
       userId: req.userId,
       query,
     });
 
     return {
       message: RESPONSES.RIDES.FETCHED_SUCCESSFULLY,
-      data: RidePresenter.toHTTPList(result.rides),
+      rides: RidePresenter.toHTTPList(items),
+      meta: meta
     };
   }
 
@@ -128,14 +131,21 @@ export class RideController {
       rideId,
       userId: req.userId,
     });
-
+    
     return {
       message: RESPONSES.RIDES.DELETED_SUCCESSFULLY,
     };
   }
-}
-function ApiBarrearAuth(): (
-  target: typeof RideController,
-) => void | typeof RideController {
-  throw new Error('Function not implemented.');
+  
+  @Post('/:rideId/bookings/:bookingId/approve')
+  @UseGuards(JwtAuthGuard)
+  async acceptBooking(
+    @Param('rideId') rideId: string,
+    @Param('bookingId') bookingId: string,
+  ) {
+      await this.acceptBookingUseCase.execute({
+        rideId,
+        bookingId,
+    });
+  }
 }
