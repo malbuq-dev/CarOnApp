@@ -4,6 +4,7 @@ import { BookingController } from './booking.controller';
 import { CreateBookingUseCase } from './use-cases/create-booking.use-case';
 import { GetBookingUseCase } from './use-cases/get-booking.use-case';
 import { FetchUserBookingsUseCase } from './use-cases/fetch-user-bookings.use-case';
+import { CancelBookingUseCase } from './use-cases/cancel-booking.use-case';
 
 @Module({
   imports: [InfrastructureModule],
@@ -12,6 +13,7 @@ import { FetchUserBookingsUseCase } from './use-cases/fetch-user-bookings.use-ca
     CreateBookingUseCase,
     GetBookingUseCase,
     FetchUserBookingsUseCase,
+    CancelBookingUseCase,
   ],
 })
 export class BookingsModule {}

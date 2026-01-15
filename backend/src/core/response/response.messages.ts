@@ -36,6 +36,8 @@ export const RESPONSES = {
     NOT_FOUND: 'Reserva não encontrado',
     USER_HAS_NO_BOOKINGS: 'O usuário não possui reservas',
     CREATED_SUCCESSFULLY: 'Reserva criado com sucesso',
+    ONLY_BOOKING_OWNER_CAN_CANCEL: 'Apenas o dono da reserva pode cancelá-la',
+    CANCELLED_SUCCESSFULLY: 'Reserva cancelada com sucesso',
     UPDATED_SUCCESSFULLY: 'Reserva atualizada com sucesso',
     FETCHED_SUCCESSFULLY: 'Reservas recuperadas com sucesso',
     FETCH_BY_ID_SUCCESSFULLY: 'Reserva recuperada com sucesso',

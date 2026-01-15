@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/core/guard/jwt-auth.guard';
 import { RESPONSES } from 'src/core/response/response.messages';
 import { CreateBookingUseCase } from './use-cases/create-booking.use-case';
@@ -7,6 +7,7 @@ import { BookingPresenter } from './booking.presenter';
 import { GetBookingUseCase } from './use-cases/get-booking.use-case';
 import { FetchUserBookingsUseCase } from './use-cases/fetch-user-bookings.use-case';
 import { PaginationQueryDto } from 'src/core/dtos/pagination-query.dto';
+import { CancelBookingUseCase } from './use-cases/cancel-booking.use-case';
 
 @Controller('bookings')
 export class BookingController {
@@ -14,6 +15,7 @@ export class BookingController {
     private readonly createBookingUseCase: CreateBookingUseCase,
     private readonly getBookingUseCase: GetBookingUseCase,
     private readonly fetchUserBookingsUseCase: FetchUserBookingsUseCase,
+    private readonly cancelBookingUseCase: CancelBookingUseCase,
   ) {}
 
   @Post()
@@ -65,6 +67,22 @@ export class BookingController {
     return {
       message: RESPONSES.BOOKINGS.FETCH_BY_ID_SUCCESSFULLY,
       data: BookingPresenter.toHTTP(result.booking)
+    }
+  }
+
+  @Post('/:id/cancel')
+  @UseGuards(JwtAuthGuard)
+  async cancel(
+    @Param('id', ParseUUIDPipe) bookingId: string,
+    @Req() req
+  ) {
+    await this.cancelBookingUseCase.execute({
+      bookingId,
+      userId: req.userId
+    });
+
+    return {
+      message: RESPONSES.BOOKINGS.CANCELLED_SUCCESSFULLY,
     }
   }
 }
