@@ -47,5 +47,7 @@ export const RESPONSES = {
     APPROVED_SUCCESSFULLY: 'Reserva realizada com sucesso',
     RIDE_OWNER_CANT_BOOK: 'O motorista de uma carona não pode ser passageiro da mesma',
     ONLY_BOOKING_OWNER_OR_RIDE_OWNER_ALLOWED: 'Apenas o dono da carona e o passageiro da reserva podem acessar esse recurso',
+    CANNOT_BE_UPDATED_AFTER_APPROVAL: 'Caronas já aprovadas não podem ser editadas',
+    CANNOT_UPDATE_AFTER_CANCELING: 'Caronas canceladas não podem ser editadas',
   },
 };

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/core/guard/jwt-auth.guard';
 import { RESPONSES } from 'src/core/response/response.messages';
 import { CreateBookingUseCase } from './use-cases/create-booking.use-case';
@@ -8,6 +8,8 @@ import { GetBookingUseCase } from './use-cases/get-booking.use-case';
 import { FetchUserBookingsUseCase } from './use-cases/fetch-user-bookings.use-case';
 import { PaginationQueryDto } from 'src/core/dtos/pagination-query.dto';
 import { CancelBookingUseCase } from './use-cases/cancel-booking.use-case';
+import { UpdateBookingUseCase } from './use-cases/update-booking.use-case';
+import { UpdateBookingDto } from './dtos/update-booking.dto';
 
 @Controller('bookings')
 export class BookingController {
@@ -16,6 +18,7 @@ export class BookingController {
     private readonly getBookingUseCase: GetBookingUseCase,
     private readonly fetchUserBookingsUseCase: FetchUserBookingsUseCase,
     private readonly cancelBookingUseCase: CancelBookingUseCase,
+    private readonly updateBookingUseCase: UpdateBookingUseCase,
   ) {}
 
   @Post()
@@ -70,7 +73,7 @@ export class BookingController {
     }
   }
 
-  @Post('/:id/cancel')
+  @Post(':id/cancel')
   @UseGuards(JwtAuthGuard)
   async cancel(
     @Param('id', ParseUUIDPipe) bookingId: string,
@@ -83,6 +86,27 @@ export class BookingController {
 
     return {
       message: RESPONSES.BOOKINGS.CANCELLED_SUCCESSFULLY,
+    }
+  }
+
+  @Patch(':id')
+  @UseGuards(JwtAuthGuard)
+  async update(
+    @Param('id', ParseUUIDPipe) bookingId: string,
+    @Body() updateBookingDto: UpdateBookingDto,
+    @Req() req,
+  ) {
+    const { seatsBooked } = updateBookingDto;
+
+    const result = await this.updateBookingUseCase.execute({
+      bookingId,
+      seatsBooked,
+      userId: req.userId,
+    });
+
+    return {
+      message: RESPONSES.BOOKINGS.UPDATED_SUCCESSFULLY,
+      data: BookingPresenter.toHTTP(result.booking),
     }
   }
 }
