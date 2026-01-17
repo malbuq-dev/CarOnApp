@@ -1,7 +1,6 @@
 import { Money } from '../value-objects/money.value-object';
 import { Base } from './base.entity';
 import { Booking } from './booking.entity';
-import { User } from './user.entity';
 
 export class Ride extends Base {
   driverId: string;

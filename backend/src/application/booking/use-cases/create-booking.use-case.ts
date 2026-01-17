@@ -46,7 +46,13 @@ export class CreateBookingUseCase {
     }
     
     if (ride.driverId === passengerId) {
-      throw new BadRequestException(RESPONSES.BOOKINGS.RIDE_OWNER_CANT_BOOK)
+      throw new BadRequestException(RESPONSES.BOOKINGS.DRIVER_CANT_BOOK_OWN_RIDE);
+    }
+
+    const now = new Date; // TO-DO: esses casos aqui deveriam estar dentro do domínio, tenho que ver os erros responses no dominio
+
+    if (now >= ride.departureTime) {
+      throw new BadRequestException(RESPONSES.BOOKINGS.CANNOT_BOOK_AFTER_RIDE_DEPARTURE);
     }
 
     if (!ride.hasEnoughSeats(seatsBooked)) {

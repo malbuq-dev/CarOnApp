@@ -35,6 +35,7 @@ export const RESPONSES = {
   BOOKINGS: {
     NOT_FOUND: 'Reserva não encontrado',
     USER_HAS_NO_BOOKINGS: 'O usuário não possui reservas',
+    CANNOT_BOOK_AFTER_RIDE_DEPARTURE: 'Não é possível criar reservas após o período de partida da carona',
     CREATED_SUCCESSFULLY: 'Reserva criado com sucesso',
     ONLY_BOOKING_OWNER_CAN_CANCEL: 'Apenas o dono da reserva pode cancelá-la',
     CANCELLED_SUCCESSFULLY: 'Reserva cancelada com sucesso',
@@ -45,7 +46,7 @@ export const RESPONSES = {
     PASSENGER_NOT_FOUND: 'O passageiro não foi encontrado',
     NO_AVALIABLE_SEATS: 'Não há acentos suficientes na carona',
     APPROVED_SUCCESSFULLY: 'Reserva realizada com sucesso',
-    RIDE_OWNER_CANT_BOOK: 'O motorista de uma carona não pode ser passageiro da mesma',
+    DRIVER_CANT_BOOK_OWN_RIDE: 'O motorista de uma carona não pode ser passageiro da mesma',
     ONLY_BOOKING_OWNER_OR_RIDE_OWNER_ALLOWED: 'Apenas o dono da carona e o passageiro da reserva podem acessar esse recurso',
     CANNOT_BE_UPDATED_AFTER_APPROVAL: 'Caronas já aprovadas não podem ser editadas',
     CANNOT_UPDATE_AFTER_CANCELING: 'Caronas canceladas não podem ser editadas',
