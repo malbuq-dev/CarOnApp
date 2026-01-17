@@ -1,8 +1,8 @@
-import { BookingsRepository } from 'src/domain/repositories/bookings.repository';
+import { BookingsRepository, FetchRideBookingsQuery } from 'src/domain/repositories/bookings.repository';
 import { TypeormBaseEntity } from '../entities/typeorm-base.entity';
 import { Booking } from 'src/domain/entities/booking.entity';
 import { Inject, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { TypeormBookingEntity } from '../entities/typeorm-booking.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BookingMapper } from '../mappers/booking.mapper';
@@ -15,6 +15,57 @@ export class TypeormBookingsRepository implements BookingsRepository {
     @InjectRepository(TypeormBookingEntity)
     private readonly repository: Repository<TypeormBookingEntity>,
   ) {}
+
+  async findManyByRideId(
+    rideId: string,
+    query: FetchRideBookingsQuery,
+  ): Promise<PaginatedResponse<Booking>> {
+
+    const limit = query.limit ?? 50;
+    const page = query.page && query.page > 0 ? query.page : 1;
+    const offset = (page - 1) * limit;
+
+    const where: any = { rideId };
+
+    if (query.status) {
+      where.status = query.status;
+    }
+
+    if (query.passengerId) {
+      where.passengerId = query.passengerId;
+    }
+
+    const findOptions: FindManyOptions<TypeormBookingEntity> = {
+      where,
+      take: limit,
+      skip: offset,
+    };
+
+    if (query.sortBy && query.sortOrder) {
+      findOptions.order = {
+        [query.sortBy]: query.sortOrder.toUpperCase(),
+      };
+    }
+
+    const [entities, totalItems] =
+      await this.repository.findAndCount(findOptions);
+
+    const items = entities.map(BookingMapper.toDomain);
+
+    const totalPages = Math.ceil(totalItems / limit);
+
+    return {
+      items,
+      meta: {
+        page,
+        limit,
+        totalItems,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+      },
+    };
+  }
 
   async findManyByPassengerId(
     passengerId: string,

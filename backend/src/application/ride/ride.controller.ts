@@ -31,6 +31,9 @@ import { RESPONSES } from 'src/core/response/response.messages';
 import { AcceptBookingUseCase } from './use-cases/accept-booking.use-case';
 import { PaginationQueryDto } from 'src/core/dtos/pagination-query.dto';
 import { DeclineBookingUseCase } from './use-cases/decline-booking.use-case copy';
+import { FetchRideBookingsUseCase } from './use-cases/fetch-ride-bookings.use-case';
+import { BookingPresenter } from '../booking/booking.presenter';
+import { FetchRideBookingsQueryDto } from './dtos/fetch-ride-bookings-query.dto';
 
 @ApiTags('Rides')
 @ApiBearerAuth()
@@ -45,6 +48,7 @@ export class RideController {
     private readonly searchRidesUseCase: SearchRidesUseCase,
     private readonly acceptBookingUseCase: AcceptBookingUseCase,
     private readonly declineBookingUseCase: DeclineBookingUseCase,
+    private readonly fetchRideBookingsUseCase: FetchRideBookingsUseCase,
   ) {}
 
   @Post()
@@ -166,4 +170,28 @@ export class RideController {
         userId: req.userId
     });
   }
+
+  @Get('/:rideId/bookings')
+  @UseGuards(JwtAuthGuard)
+  async fetchRideBookings(
+    @Param('rideId', ParseUUIDPipe) rideId: string,
+    @Query() query: FetchRideBookingsQueryDto,
+    @Req() req,
+  ) {
+    
+    const { items, meta } =
+      await this.fetchRideBookingsUseCase.execute({
+        rideId,
+        userId: req.userId,
+        status: query.status,
+        ...query,
+      });
+
+    return {
+      message: RESPONSES.BOOKINGS.FETCHED_SUCCESSFULLY,
+      bookings: BookingPresenter.toHTTPList(items),
+      meta,
+    };
+  }
+
 }
