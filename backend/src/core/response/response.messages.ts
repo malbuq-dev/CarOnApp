@@ -29,7 +29,12 @@ export const RESPONSES = {
     FETCH_BY_ID_SUCCESSFULLY: 'Carona recuperada com sucesso',
     DELETED_SUCCESSFULLY: 'Carona deletada com sucesso',
     ARRIVAL_AND_DEPARTURE_TIME_INCONSISTENT:'Os horários de saída e chegada da carona estão inválidos',
+    CANNOT_REDUCE_SEATS_BELOW_APPROVED_BOOKINGS:'A quantidade de assentos não pode ser atualizada pois é menor do que os assentos já aprovados',
     DRIVER_NOT_FOUND: 'O motorista associado a carona não foi encontrado',
+    PRICE_MUST_BE_GREATER_THAN_ZERO: 'O preço de uma carona deve ser maior que zero',
+    ORIGIN_DESTINATION_MUST_BE_DIFFERENT: 'O local de origem e destino de uma carona não podem ser os mesmos',
+    CANNOT_UPDATE_RIDE_WITH_APPROVED_BOOKINGS: 'Não é possível atualizar uma carona que já possui reservas aprovadas',
+    CANNOT_UPDATE_CANCELED_RIDE: 'Não é possível atualizar uma carona já cancelada',
   },
 
   BOOKINGS: {
@@ -39,6 +44,8 @@ export const RESPONSES = {
     CREATED_SUCCESSFULLY: 'Reserva criado com sucesso',
     ONLY_BOOKING_OWNER_CAN_CANCEL: 'Apenas o dono da reserva pode cancelá-la',
     CANCELLED_SUCCESSFULLY: 'Reserva cancelada com sucesso',
+    BOOKING_IS_ALREADY_CANCELED: 'Não é possível cancelar uma reserva já cancelada',
+    BOOKING_IS_ALREADY_DECLINED: 'Não é possível recusar uma reserva já recusada',
     UPDATED_SUCCESSFULLY: 'Reserva atualizada com sucesso',
     FETCHED_SUCCESSFULLY: 'Reservas recuperadas com sucesso',
     FETCH_BY_ID_SUCCESSFULLY: 'Reserva recuperada com sucesso',
@@ -50,5 +57,7 @@ export const RESPONSES = {
     ONLY_BOOKING_OWNER_OR_RIDE_OWNER_ALLOWED: 'Apenas o dono da carona e o passageiro da reserva podem acessar esse recurso',
     CANNOT_BE_UPDATED_AFTER_APPROVAL: 'Caronas já aprovadas não podem ser editadas',
     CANNOT_UPDATE_AFTER_CANCELING: 'Caronas canceladas não podem ser editadas',
+    SEATS_BOOKED_MUST_BE_GREATER_THAN_ZERO: 'O número de assentos reservados para uma carona deve ser maior que zero',
+    CANNOT_BOOK_MORE_SEATS_THAN_TOTAL_RIDE_SEATS: 'O número de assentos reservados não pode ser maior que o número total de assentos disponíveis na carona',
   },
 };

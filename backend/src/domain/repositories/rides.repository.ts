@@ -22,4 +22,5 @@ export interface RidesRepository {
     sortOrder?: 'asc' | 'desc';
   }): Promise<Ride[]>;
   findByIdWithBookings(id: string): Promise<Ride | null>;
+  findByBookingIdWithBookings(bookingId: string): Promise<Ride | null>;
 }

@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { TypeormUserEntity } from './typeorm-user.entity';
 import { TypeormBaseEntity } from './typeorm-base.entity';
 import { TypeormBookingEntity } from './typeorm-booking.entity';
+import { RideStatus } from 'src/domain/entities/ride.entity';
 
 @Entity('rides')
 export class TypeormRideEntity extends TypeormBaseEntity {
@@ -42,4 +43,11 @@ export class TypeormRideEntity extends TypeormBaseEntity {
 
   @Column({ type: 'int' })
   priceInCents: number;
+  
+  @Column({
+    type: 'enum',
+    enum: RideStatus,
+    default: RideStatus.ACTIVE,
+  })
+  status: RideStatus;
 }

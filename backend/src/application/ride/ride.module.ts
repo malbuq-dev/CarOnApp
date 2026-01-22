@@ -10,6 +10,7 @@ import { SearchRidesUseCase } from './use-cases/search-rides.use-case';
 import { AcceptBookingUseCase } from './use-cases/accept-booking.use-case';
 import { DeclineBookingUseCase } from './use-cases/decline-booking.use-case copy';
 import { FetchRideBookingsUseCase } from './use-cases/fetch-ride-bookings.use-case';
+import { CancelRideUseCase } from './use-cases/cancel-ride.use-case';
 
 @Module({
   imports: [InfrastructureModule],
@@ -24,6 +25,7 @@ import { FetchRideBookingsUseCase } from './use-cases/fetch-ride-bookings.use-ca
     AcceptBookingUseCase,
     DeclineBookingUseCase,
     FetchRideBookingsUseCase,
+    CancelRideUseCase,
   ],
 })
 export class RidesModule {}

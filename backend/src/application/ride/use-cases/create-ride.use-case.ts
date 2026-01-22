@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { RESPONSES } from 'src/core/response/response.messages';
 import { Ride } from 'src/domain/entities/ride.entity';
+import { mapDomainErrorToHttp } from 'src/domain/errors/http-error.mapper';
 import {
   RIDES_REPOSITORY,
   USERS_REPOSITORY,
@@ -57,28 +58,28 @@ export class CreateRideUseCase {
     }
 
     const price = Money.fromDecimal(priceString);
-
+    
     const departureDate = new Date(departureTime);
     const arrivalDate = new Date(arrivalTime);
 
-    if (arrivalDate <= departureDate) {
-      throw new BadRequestException(
-        'O hórario de chegada se encontra inválido',
+
+    try {
+      const ride = Ride.create(
+        driverId,
+        origin,
+        destination,
+        departureDate,  
+        arrivalDate,
+        totalSeats,
+        price,
       );
+      await this.ridesRepository.save(ride);
+
+      return { ride };
+
+    } catch (error) {
+        mapDomainErrorToHttp(error);
     }
 
-    const ride = new Ride(
-      driverId,
-      origin,
-      destination,
-      departureDate,
-      arrivalDate,
-      totalSeats,
-      price,
-    );
-
-    await this.ridesRepository.save(ride);
-
-    return { ride };
   }
 }

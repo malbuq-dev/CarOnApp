@@ -1,5 +1,6 @@
 import { BadRequestException, ForbiddenException, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { RESPONSES } from "src/core/response/response.messages";
+import { mapDomainErrorToHttp } from "src/domain/errors/http-error.mapper";
 import { BOOKINGS_REPOSITORY, RIDES_REPOSITORY } from "src/domain/repositories/repository.tokens";
 import type { RidesRepository } from "src/domain/repositories/rides.repository";
 
@@ -29,12 +30,13 @@ export class DeclineBookingUseCase {
             throw new NotFoundException(RESPONSES.RIDES.NOT_FOUND);
         }
 
-        if (ride.driverId != userId) {
-            throw new ForbiddenException(RESPONSES.RIDES.NOT_RIDE_OWNER);
+        try {
+            ride.declineBooking(userId, bookingId);
+            await this.ridesRespository.save(ride);
+        }
+        catch(error) {
+            mapDomainErrorToHttp(error);
         }
 
-        ride.declineBooking(bookingId);
-
-        await this.ridesRespository.save(ride);
     }
 }

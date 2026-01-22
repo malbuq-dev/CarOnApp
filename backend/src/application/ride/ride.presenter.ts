@@ -20,7 +20,8 @@ export class RidePresenter {
       arrivalTime: ride.arrivalTime.toISOString(),
       totalSeats: ride.totalSeats,
       price: ride.price.toDecimal(),
-      approvedBookings,
+      status: ride.status,
+      approvedBookings: approvedBookings,
     };
   }
 

@@ -1,6 +1,7 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { RESPONSES } from 'src/core/response/response.messages';
 import { Booking } from 'src/domain/entities/booking.entity';
+import { mapDomainErrorToHttp } from 'src/domain/errors/http-error.mapper';
 import type { BookingsRepository } from 'src/domain/repositories/bookings.repository';
 import {
   BOOKINGS_REPOSITORY,
@@ -31,38 +32,31 @@ export class CreateBookingUseCase {
     private readonly usersRepository: UsersRepository,
   ) {}
 
-  async execute(request: CreateBookingRequest): Promise<CreateBookingResponse> {
-    const { passengerId, rideId, seatsBooked } = request;
+  async execute(request: CreateBookingRequest) {
+    const ride = await this.ridesRepository.findByIdWithBookings(request.rideId);
+    const passenger = await this.usersRepository.findById(request.passengerId);
 
-    const ride = await this.ridesRepository.findByIdWithBookings(rideId);
-    const passenger = await this.usersRepository.findById(passengerId);
+    if (!passenger) throw new NotFoundException(RESPONSES.BOOKINGS.PASSENGER_NOT_FOUND);
 
-    if (!passenger) {
-      throw new NotFoundException(RESPONSES.BOOKINGS.PASSENGER_NOT_FOUND);
+    if (!ride) throw new NotFoundException(RESPONSES.RIDES.NOT_FOUND);
+
+    const now = new Date();
+
+    let booking: Booking;
+
+    try {
+      booking = ride.requestBooking(
+        request.passengerId,
+        request.seatsBooked,
+        now,
+      );
+    } catch (error) {
+      mapDomainErrorToHttp(error);
     }
-
-    if (!ride) {
-      throw new NotFoundException(RESPONSES.RIDES.NOT_FOUND);
-    }
-    
-    if (ride.driverId === passengerId) {
-      throw new BadRequestException(RESPONSES.BOOKINGS.DRIVER_CANT_BOOK_OWN_RIDE);
-    }
-
-    const now = new Date; // TO-DO: esses casos aqui deveriam estar dentro do domínio, tenho que ver os erros responses no dominio
-
-    if (now >= ride.departureTime) {
-      throw new BadRequestException(RESPONSES.BOOKINGS.CANNOT_BOOK_AFTER_RIDE_DEPARTURE);
-    }
-
-    if (!ride.hasEnoughSeats(seatsBooked)) {
-      throw new NotFoundException(RESPONSES.BOOKINGS.NO_AVALIABLE_SEATS);
-    }
-
-    const booking = new Booking(seatsBooked, rideId, passengerId);
 
     await this.bookingsRepository.save(booking);
 
     return { booking };
   }
 }
+

@@ -22,6 +22,7 @@ export class RideMapper {
       entity.totalSeats,
       Money.fromCents(entity.priceInCents),
       bookings,
+      entity.status,
     );
   }
 
@@ -35,6 +36,7 @@ export class RideMapper {
     entity.departureTime = ride.departureTime;
     entity.totalSeats = ride.totalSeats;
     entity.priceInCents = ride.price.toCents();
+    entity.status = ride.status;
 
     entity.bookings = ride.bookings.map(booking =>
        BookingMapper.toPersistence(booking),

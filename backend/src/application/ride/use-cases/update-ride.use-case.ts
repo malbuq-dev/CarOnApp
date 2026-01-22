@@ -1,11 +1,13 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { RESPONSES } from 'src/core/response/response.messages';
 import { Ride } from 'src/domain/entities/ride.entity';
+import { mapDomainErrorToHttp } from 'src/domain/errors/http-error.mapper';
 import {
   RIDES_REPOSITORY,
   USERS_REPOSITORY,
@@ -35,7 +37,9 @@ export class UpdateRideUseCase {
     private readonly ridesRepository: RidesRepository,
   ) {}
 
-  async execute(updateRideRequest: UpdateRideRequest) {
+  async execute(
+    request: UpdateRideRequest,
+  ): Promise<UpdateRideResponse> {
     const {
       rideId,
       userId,
@@ -45,32 +49,37 @@ export class UpdateRideUseCase {
       arrivalTime,
       totalSeats,
       price,
-    } = updateRideRequest;
+    } = request;
 
-    const existingRide = await this.ridesRepository.findByIdAndAuthorId(
-      rideId,
-      userId,
-    );
+    const ride = await this.ridesRepository.findByIdWithBookings(rideId);
 
-    if (!existingRide) {
+    if (!ride) {
       throw new NotFoundException(RESPONSES.RIDES.NOT_FOUND);
     }
 
-    if (origin) existingRide.origin = origin;
-    if (destination) existingRide.destination = destination;
-    if (departureTime) existingRide.departureTime = new Date(departureTime);
-    if (arrivalTime) existingRide.arrivalTime = new Date(arrivalTime);
-    if (totalSeats) existingRide.totalSeats = totalSeats;
-    if (price) existingRide.price = Money.fromDecimal(price);
-
-    if (existingRide.arrivalTime <= existingRide.departureTime) {
-      throw new BadRequestException(
-        RESPONSES.RIDES.ARRIVAL_AND_DEPARTURE_TIME_INCONSISTENT,
-      );
+    if (ride.driverId !== userId) {
+      throw new ForbiddenException(RESPONSES.RIDES.NOT_RIDE_OWNER);
     }
 
-    await this.ridesRepository.save(existingRide);
+    try {
+      const newPrice = price ? Money.fromDecimal(price) : undefined;
+      ride.updatePrice(newPrice);
 
-    return { updatedRide: existingRide };
+      ride.updateRoute(origin, destination);
+
+      const newDepartureTime = departureTime ? new Date(departureTime) : undefined;
+      const newArrivalTime = arrivalTime ? new Date(arrivalTime) : undefined;
+      ride.updateSchedule(newDepartureTime, newArrivalTime);
+
+      ride.updateSeats(totalSeats);
+
+      await this.ridesRepository.save(ride);
+
+      return { updatedRide: ride };
+      
+    } catch (error) {
+      mapDomainErrorToHttp(error);
+    }
   }
 }
+

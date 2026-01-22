@@ -123,6 +123,23 @@ export class TypeormRideRepository implements RidesRepository {
     return RideMapper.toDomain(ride);
   }
 
+  async findByBookingIdWithBookings(bookingId: string): Promise<Ride | null> {
+    const ride = await this.repository.findOne({
+      where: {
+        bookings: {
+          id: bookingId,
+        },
+      },
+      relations: ['bookings'],
+    });
+
+    if (!ride) {
+      return null;
+    }
+
+    return RideMapper.toDomain(ride);
+  }
+
   async findByIdAndAuthorId(
     id: string,
     authorId: string,

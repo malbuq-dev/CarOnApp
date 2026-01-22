@@ -1,8 +1,6 @@
 import dayjs from 'src/core/config/dayjs.config';
-import { UserMapper } from './user.mapper';
 import { TypeormBookingEntity } from '../entities/typeorm-booking.entity';
 import { Booking } from 'src/domain/entities/booking.entity';
-import { RideMapper } from './ride.mapper';
 
 export class BookingMapper {
   static toDomain(entity: TypeormBookingEntity): Booking {
@@ -15,6 +13,11 @@ export class BookingMapper {
     );
     booking.createdAt = dayjs(entity.createdAt).toDate();
     booking.updatedAt = dayjs(entity.updatedAt).toDate();
+
+    if (entity.cancelReason) {
+      booking.cancelReason = entity.cancelReason;
+    }
+
     return booking;
   }
 
@@ -25,6 +28,10 @@ export class BookingMapper {
     entity.status = booking.status;
     entity.rideId = booking.rideId;
     entity.passengerId = booking.passengerId;
+
+    if (booking.cancelReason) {
+      entity.cancelReason = booking.cancelReason;
+    }
 
     return entity;
   }

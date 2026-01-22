@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { TypeormUserEntity } from './typeorm-user.entity';
 import { TypeormBaseEntity } from './typeorm-base.entity';
 import { TypeormRideEntity } from './typeorm-ride.entity';
-import { BookingStatus } from 'src/domain/entities/booking.entity';
+import { BookingCancelReason, BookingStatus } from 'src/domain/entities/booking.entity';
 
 @Entity('bookings')
 export class TypeormBookingEntity extends TypeormBaseEntity {
@@ -33,4 +33,11 @@ export class TypeormBookingEntity extends TypeormBaseEntity {
     enum: BookingStatus,
   })
   status: BookingStatus;
+
+  @Column({
+    type: 'enum',
+    enum: BookingCancelReason,
+    nullable: true,
+  })
+  cancelReason: BookingCancelReason | null;
 }
