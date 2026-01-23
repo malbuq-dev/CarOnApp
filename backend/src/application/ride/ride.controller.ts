@@ -146,6 +146,7 @@ export class RideController {
   }
   
   @Post('/:rideId/bookings/:bookingId/approve')
+  @ApiOperation({ summary: 'Aprova uma reserva de uma carona (somente motorista)' })
   @UseGuards(JwtAuthGuard)
   async acceptBooking(
     @Param('rideId') rideId: string,
@@ -153,46 +154,48 @@ export class RideController {
     @Req() req,
   ) {
     await this.acceptBookingUseCase.execute({
-        rideId,
-        bookingId,
-        userId: req.userId,
+      rideId,
+      bookingId,
+      userId: req.userId,
     });
   }
 
   @Post('/:rideId/bookings/:bookingId/decline')
+  @ApiOperation({ summary: 'Recusa uma reserva de uma carona (somente motorista)' })
   @UseGuards(JwtAuthGuard)
   async declineBooking(
     @Param('rideId') rideId: string,
     @Param('bookingId') bookingId: string,
     @Req() req,
   ) {
-      await this.declineBookingUseCase.execute({
-        rideId,
-        bookingId,
-        userId: req.userId
+    await this.declineBookingUseCase.execute({
+      rideId,
+      bookingId,
+      userId: req.userId,
     });
   }
 
   @Post('/:rideId/cancel')
+  @ApiOperation({ summary: 'Cancela uma carona existente (somente motorista)' })
   @UseGuards(JwtAuthGuard)
   async cancel(
     @Param('rideId', ParseUUIDPipe) rideId: string,
     @Req() req,
   ) {
-      await this.cancelRideUseCase.execute({
-        rideId,
-        userId: req.userId
+    await this.cancelRideUseCase.execute({
+      rideId,
+      userId: req.userId,
     });
   }
 
   @Get('/:rideId/bookings')
+  @ApiOperation({ summary: 'Lista as reservas de uma carona (somente motorista)' })
   @UseGuards(JwtAuthGuard)
   async fetchRideBookings(
     @Param('rideId', ParseUUIDPipe) rideId: string,
     @Query() query: FetchRideBookingsQueryDto,
     @Req() req,
   ) {
-    
     const { items, meta } =
       await this.fetchRideBookingsUseCase.execute({
         rideId,
@@ -207,5 +210,4 @@ export class RideController {
       meta,
     };
   }
-
 }

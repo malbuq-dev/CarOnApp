@@ -28,6 +28,7 @@ export class TypeormRefreshTokenRepository implements RefreshTokenRepository {
   async findByToken(token: string): Promise<RefreshToken | null> {
     const result = await this.repository.findOne({
       where: { token: token },
+      relations: ['user'],
     });
     return result ? RefreshTokenMapper.toDomain(result) : null;
   }

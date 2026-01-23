@@ -6,6 +6,7 @@ import { LoginUseCase } from './use-cases/login.use-case';
 import { ChangePasswordUseCase } from './use-cases/change-password.use-case';
 import { TokenService } from './services/tokens.service';
 import { RefreshTokensUseCase } from './use-cases/refresh-token.use-case';
+import { LogoutUseCase } from './use-cases/logout-use-case';
 
 @Module({
   imports: [InfrastructureModule],
@@ -13,6 +14,7 @@ import { RefreshTokensUseCase } from './use-cases/refresh-token.use-case';
   providers: [
     CreateUserUseCase,
     LoginUseCase,
+    LogoutUseCase,
     ChangePasswordUseCase,
     RefreshTokensUseCase,
     TokenService,

@@ -12,6 +12,7 @@ import { RefreshTokensUseCase } from './use-cases/refresh-token.use-case';
 import { TokensPresenter } from './tokens.presenter';
 import { ApiOperation, ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { RESPONSES } from 'src/core/response/response.messages';
+import { LogoutUseCase } from './use-cases/logout-use-case';
 
 @ApiTags('Auth')
 @ApiBearerAuth()
@@ -20,6 +21,7 @@ export class AuthController {
   constructor(
     private readonly createUserUseCase: CreateUserUseCase,
     private readonly loginUseCase: LoginUseCase,
+    private readonly logoutUseCase: LogoutUseCase,
     private readonly changePasswordUseCase: ChangePasswordUseCase,
     private readonly refreshTokensUseCase: RefreshTokensUseCase,
   ) {}
@@ -89,6 +91,20 @@ export class AuthController {
     return {
       message: RESPONSES.AUTH.TOKENS_REFRESHED_SUCCESSFULLY,
       data: TokensPresenter.toHTTP(result.tokens),
+    };
+  }
+
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary:
+      'Deleta o refresh token associado à um usuário',
+  })
+  async logout(@Req() req) {
+    const result = await this.logoutUseCase.execute(req.userId);
+
+    return {
+      message: RESPONSES.AUTH.UNAUTHENTICATED_SUCCESSFULLY,
     };
   }
 }

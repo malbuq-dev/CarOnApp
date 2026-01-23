@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { RefreshToken } from 'src/domain/entities/refresh-token.entity';
 import { User } from 'src/domain/entities/user.entity';
@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import type { RefreshTokenRepository } from 'src/domain/repositories/refresh-token.repository';
 import { REFRESH_TOKEN_REPOSITORY } from 'src/domain/repositories/repository.tokens';
 import { Tokens } from 'src/domain/entities/tokens.entity';
+import { RESPONSES } from 'src/core/response/response.messages';
 
 @Injectable()
 export class TokenService {
@@ -50,5 +51,17 @@ export class TokenService {
     const refreshToken = new RefreshToken(refreshTokenValue, user, expiryDate);
 
     await this.refreshTokenRepository.save(refreshToken);
+  }
+
+  async revokeToken(userId: string) {
+      const existingToken = await this.refreshTokenRepository.findByUserId(
+        userId,
+      );
+
+      if (!existingToken) {
+        throw new NotFoundException(RESPONSES.AUTH.REFRESH_TOKEN_NOT_FOUND);
+      }
+
+      await this.refreshTokenRepository.delete(existingToken.id);
   }
 }

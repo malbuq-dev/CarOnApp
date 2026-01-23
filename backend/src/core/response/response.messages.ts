@@ -10,6 +10,8 @@ export const RESPONSES = {
       'O token de acesso foi restaurado com sucesso',
     INVALID_CREDENTIALS: 'Usuário forneceu credenciais inválidas',
     INVALID_REFRESH_TOKEN: 'Usuário forneceu um refresh token inválido',
+    REFRESH_TOKEN_NOT_FOUND: 'Não há um refresh token associado ao usuário',
+    UNAUTHENTICATED_SUCCESSFULLY: 'Usuário foi desautenticado com sucesso',
   },
   USERS: {
     NOT_FOUND: 'Usuário não encontrado',
